@@ -39,7 +39,7 @@ public class P2PFile
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds = mongoutil.getMorphiaDatastoreForNestVer2();
 	Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
-	static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  //yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
 	
 	ClientResponse clientReponse;
 	AbstractRestClient abstractRestClient = new AbstractRestClient();

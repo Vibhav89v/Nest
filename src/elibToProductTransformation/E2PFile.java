@@ -34,7 +34,7 @@ public class E2PFile
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds = mongoutil.getMorphiaDatastoreForNestVer2();
-	static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); //yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
 	
 	 Elib elib=new Elib();
 	 Product product=new Product();
@@ -151,7 +151,7 @@ public class E2PFile
                //====================================================
                System.out.println("File Download Source : "+mObj1.get("filedownloadsource"));
                System.out.println("File Download Date : "+mObj1.get("filedownloaddate"));
-               System.out.println("File RE-Download Source : "+mObj1.get("fileredownloadsource"));
+               System.out.println("File RE-Download Soyrce : "+mObj1.get("fileredownloadsource"));
                System.out.println("File RE-Download Date : "+mObj1.get("fileredownloaddate"));
                //===================================================
      productDate = dateFormat.format((Date)mObj1.get("updateddate"));

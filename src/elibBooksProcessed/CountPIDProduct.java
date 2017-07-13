@@ -1,3 +1,5 @@
+package elibBooksProcessed;
+
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,7 +30,7 @@ import generics.AddDate;
 import generics.MongoDBMorphia;
 
 
-public class E2PTest
+public class CountPIDProduct
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds = mongoutil.getMorphiaDatastoreForNestVer2();
@@ -39,11 +41,13 @@ public class E2PTest
 	 Product product=new Product();
 	 String elibDate;
 	 String productDate;
+	 String eDate;
+	 String pDate;
 	 public Logger log;
 	 public static WebDriver driver;
 	 int count=0;
 	 
-	 public E2PTest()
+	 public CountPIDProduct()
 	 {
 	  log = Logger.getLogger(this.getClass());
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
@@ -52,7 +56,7 @@ public class E2PTest
 	 @Test(enabled=true, priority=1, groups={"All"})
 	 public void elibToProductTransformation() throws InterruptedException, SQLException
 	 {
-	  System.out.println("--------------PID of Books Missing in NEST--------------------");
+	  System.out.println("--------------In Elib to Product Transformation flow Meta--------------------");
 	  
 	  System.out.println("Fetching all the Product Id's from the url");
 	  
@@ -72,29 +76,18 @@ public class E2PTest
         {
         	ProductID = t.nextToken();
         	int result = Integer.parseInt(ProductID);
-        	int result1=result;
-        
+            
             DBCollection query = ds1.getDB().getCollection("product");            
             DBCursor	cursor = query.find(new BasicDBObject("provider_productid", result));
             
             while( cursor.hasNext() )
             {
             	DBObject mObj = cursor.next();
-            	System.out.println(mObj.get("provider_productid"));
             	System.out.println("'PROVIDER_PRODUCT ID' OF PRODUCT COLLECTION : "+result);
-            	//System.out.println();
+            	System.out.println();
             	count++;
-                if(mObj.get("provider_productid").equals(result))
-                {
-                	System.out.println("Product ids present in both");
-                	
-                }
-                else
-                {
-                	System.out.println("Product id is not present : "+result1);
-                }
+               
             }
-            System.out.println();
         }
         System.out.println("Total number of Books Processed by NEST : "+count);
         driver.close();

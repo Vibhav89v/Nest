@@ -1,5 +1,3 @@
-package elibToProductTransformation;
-
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,29 +28,28 @@ import generics.AddDate;
 import generics.MongoDBMorphia;
 
 
-public class E2P
+public class ExtrasElib
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds = mongoutil.getMorphiaDatastoreForNestVer2();
+	Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
 	static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  //yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
 
-	Elib elib=new Elib();
+	 Elib elib=new Elib();
 	 Product product=new Product();
 	 String elibDate;
 	 String productDate;
-	 String eDate;
-	 String pDate;
 	 public Logger log;
 	 public static WebDriver driver;
-	 //int count=0;
+	 int count=0;
 	 
-	 public E2P()
+	 public ExtrasElib()
 	 {
 	  log = Logger.getLogger(this.getClass());
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	 }
 	 
-	 @Test(enabled=true, priority=1, groups={"All"})
+	 @Test(enabled=true, priority=5, groups={"All"})
 	 public void elibToProductTransformation() throws InterruptedException, SQLException
 	 {
 	  System.out.println("--------------In Elib to Product Transformation flow Meta--------------------");
@@ -74,8 +71,7 @@ public class E2P
         Elib prodList=null;
         Product proCollection=null;
         Publisher publish=null;
-        //String actual="";
-        //String expected="";
+    
         while(t.hasMoreTokens())
         {
         	ProductID = t.nextToken();
@@ -100,24 +96,16 @@ public class E2P
             gte	= gte.plusDays(1);
             Date	end  = new Date(gte.withTimeAtStartOfDay().getMillis());
             
- //---------Setting the criteria of Getting the elib information based on the current and previous day's date-----------
+ //-----------------------------------------ELIB INFORMATION-----------------------------------------------------------
             DBCollection query = ds.getDB().getCollection("elib_webshop_meta");            
-            Document	gt = new Document("lastupdatedon", new Document("$gte", start));
-            Document	lt = new Document("lastupdatedon", new Document("$lt", end)); 
+            //Document	gt = new Document("lastupdatedon", new Document("$gte", start));
+            //Document	lt = new Document("lastupdatedon", new Document("$lt", end)); 
             DBCursor	cursor = query.find(new BasicDBObject("ProductID", result));
             		//.append("$and", Arrays.asList(gt, lt)));
-         
-            
-            //Retriving the fields from the elib collection
-            //System.out.println("LastUpdatedOn="+elib.getLastupdatedon());
-            
-            /*query.criteria("ProductID"+result);
-            query.criteria("lastupdatedon"+iso+("2017-06-26T18:42:06.835Z"));*/
-            
+
  //------------------------------Accessing the Members and Inner Members in a collection---------------------------------------
             List<Elib> list = new ArrayList<Elib>();
             
-			//Integer	id = null;
             while( cursor.hasNext() )
             {
              DBObject mObj = cursor.next();
@@ -132,12 +120,12 @@ public class E2P
               //System.out.println(dbObj);
               System.out.println("'STATUS' IN ELIB_WEBSHOP_META COLLECTION : "+ dbObj.get("Name") );
               System.out.println("'LAST_UPDATED_ON' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("lastupdatedon"));
+              System.out.println("");
          
      elibDate = dateFormat.format((Date) mObj.get("lastupdatedon"));
      System.out.println("ELIB DATE = "+elibDate);
-              
-              Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
-              
+     //--------------------------------PRODUCT INFORMATION------------------------------------------------------------
+     
               //db.product.find({"provider_productid":ProductID,"updateddate":updateddate,}).pretty();
               DBCollection query1 = ds1.getDB().getCollection("product");
               DBCursor cursor1 = query1.find(new BasicDBObject("provider_productid", result));
@@ -147,18 +135,55 @@ public class E2P
                DBObject mObj1 = cursor1.next();
               // System.out.println(mObj1.toString());
                product.setProvider_productid((Integer) mObj1.get("provider_productid"));//setProductId( (Integer) mObj1.get("provider_productid"));
+               System.out.println("'ISBN' IN PRODUCT COLLECTION : "+mObj1.get("isbn"));
+               System.out.println("'TITLE' IN PRODUCT COLLECTION : "+mObj1.get("title"));
                System.out.println("'UPDATED_DATE' IN PRODUCT COLLECTION :"+mObj1.get("updateddate"));
+               System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION : "+mObj1.get("productstatus"));
+               System.out.println("'FILE SIZE' IN PRODUCT COLLECTION : "+mObj1.get("filesize"));
+               System.out.println("'NET PRICE' IN PRODUCT COLLECTION : "+mObj1.get("netprice"));
+               System.out.println("'ADULT STATUS' IN PRODUCT COLLECTION : "+mObj1.get("adult"));
+               System.out.println("'SUB PRICE' IN PRODUCT COLLECTION : "+mObj1.get("subprice"));
+               System.out.println("'BOOK LENGTH' IN PRODUCT COLLECTION : "+mObj1.get("booklength"));
        
      productDate = dateFormat.format((Date)mObj1.get("updateddate"));
      System.out.println("PRODUCT DATE = "+productDate);
+     
                DBObject mObj2 = (DBObject) mObj1.get("publisher");
                System.out.println("'IS_CONTRACT_AVAILABLE' IN PRODUCT COLLECTION : "+mObj2.get("iscontractavailable"));
+               System.out.println("'PUBLISHER NAME' IN PRODUCT COLLECTIPON : "+mObj2.get("publishername"));
+               System.out.println("'DISTRIBUTOR NAME' IN PRODUCT COLLECTION : "+mObj2.get("distributorname"));
                
-//               BasicDBList dbList2 = (BasicDBList) mObj1.get("publisher");
-//               for(Object dbObj2 : dbList2)
-//               {
-//            	   System.out.println("STATUS IN PRODUCT COLLECTION : "+ dbObj2.get("name") );
-//               }
+               DBObject mObj3=(DBObject)mObj1.get("booktype");
+               System.out.println("'BOOK_TYPE' IN PRODUCT COLLLECTION : "+mObj3.get("book_type"));
+               
+               DBObject mObj4=(DBObject)mObj1.get("contributors");
+               System.out.println("'FIRST NAME' IN PRODUCT COLLECTION : "+mObj3.get("firstname"));
+               System.out.println("'LAST NAME' IN PRODUCT COLLECTION : "+mObj3.get("lastname"));
+               System.out.println("'ROLE' IN PRODUCT COLLECTION : "+mObj3.get("role"));
+               System.out.println("'LAST UPDATED ON' IN PRODUCT COLLECTION : "+mObj3.get("lastupdatedon"));
+               
+               DBObject mObj5=(DBObject)mObj1.get("pricelog");
+               System.out.println("'CURRENCY' IN PRODUCT COLLECTION : "+mObj5.get("currency"));
+               System.out.println("'IS_ACTIVE_PRICE' IN PRODUCT COLLECTION : "+mObj5.get("isactiveprice"));
+             
+               DBObject mObj6=(DBObject)mObj1.get("pricecalculation");
+               if(mObj1.get("pricecalculation") != null)
+               {
+            	   System.out.println("'PRICE MATRIX ID' IN PRODUCT COLLECTION : "+mObj6.get("pricematrixid"));
+            	   System.out.println("'PRICE MATRIX NAME' IN PRODUCT COLLECTION : "+mObj6.get("pricematrixname"));
+               }
+               else
+               {
+            	   System.out.println("PRICE CALCULATION FIELDS ARE NULL");
+               }
+               BasicDBList dbList2 = (BasicDBList) mObj6.get("publisherpaymentmodel");
+               BasicDBObject[] dbArr2 = dbList2.toArray(new BasicDBObject[0]);
+               for(BasicDBObject dbObj2 : dbArr2)
+               {
+            	   System.out.println("'PAYMENT MODEL NAME' IN PRODUCT COLLECTION : "+dbObj2.get("paymentmodelname"));
+            	   System.out.println("'STATUS' IN PRODUCT COLLECTION : "+dbObj2.get("status"));
+               }
+               
                BasicDBList dbList1 = (BasicDBList) mObj1.get("productlist");
                BasicDBObject[] dbArr1 = dbList1.toArray(new BasicDBObject[0]);
                for(BasicDBObject dbObj1 : dbArr1) 
@@ -166,7 +191,9 @@ public class E2P
                 //System.out.println(dbObj1);
                 System.out.println("'STATUS' IN PRODUCT COLLECTION : "+ dbObj1.get("name") );
                }
-           
+               
+               
+               
              }
            }
         }
@@ -179,9 +206,9 @@ public class E2P
           	  System.out.println("'lastupdatedon' of 'Elib' and 'updateddate' of 'Product' collection DIDN'T MATCHED");
             }
             System.out.println();
-            //count++;
+            count++;
    }
-        //System.out.println("==================Total number of 'ProductID's' being fetched================= : "+count);
+        System.out.println("==================Total number of 'ProductID's' being fetched================= : "+count);
         driver.close();
   }
  }

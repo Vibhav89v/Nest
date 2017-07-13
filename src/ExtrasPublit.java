@@ -1,5 +1,3 @@
-package PublitToProductTransformation;
-
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,7 +28,7 @@ import restClientForPublit.AbstractRestClient;
 import vo.Datum;
 import vo.PublitVO;
 
-public class P2P 
+public class ExtrasPublit 
 {
 	static String userid = "nextory_api_user";
 	static String password = "tos559ntio8ge9ep";
@@ -51,7 +49,7 @@ public class P2P
 	 String productDate;
 	 public static WebDriver driver;
 	 
-	 public P2P()
+	 public ExtrasPublit()
 	 {
 	  log = Logger.getLogger(this.getClass());
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
@@ -112,11 +110,27 @@ public class P2P
             	
             	DBObject mObj1 = (DBObject) mObj.get("manifestation");
             	System.out.println("'STATUS' IN PUBLIT COLLECTION :"+mObj1.get("status"));
+            	System.out.println("'TYPE' IN PUBLIT COLLECTION : "+mObj1.get("type"));
+            	System.out.println("'PUBLISHED_AT' IN PUBLIT COLLECTION : "+mObj1.get("published_at"));
+            	System.out.println("'FORMAT' IN PUBLIT COLLECTION : "+mObj1.get("format"));
+            	
             	System.out.println("'LAST UPDATED ON' IN PUBLIT COLLECTION : "+mObj.get("lastupdatedon_nest"));
             	
          publitDate = dateFormat.format((Date) mObj.get("lastupdatedon_nest"));
          System.out.println("PUBLIT DATE = "+publitDate);
-            	
+         
+         		BasicDBList dbList = (BasicDBList) mObj.get("files");
+         		BasicDBObject[] dbArr = dbList.toArray(new BasicDBObject[0]);
+         		for(BasicDBObject dbObj : dbArr) 
+         		{
+         			//System.out.println(dbObj);
+         			System.out.println("'STATUS' IN PRODUCT COLLECTION : "+ dbObj.get("type") );
+         			System.out.println("'STATUS' IN PRODUCT COLLECTION : "+ dbObj.get("size") );
+         			System.out.println("'STATUS' IN PRODUCT COLLECTION : "+ dbObj.get("extension") );
+         			System.out.println("'STATUS' IN PRODUCT COLLECTION : "+ dbObj.get("mime_type") );
+         			System.out.println("'STATUS' IN PRODUCT COLLECTION : "+ dbObj.get("checksum") );
+         		}
+     
             	DBCollection query1 = ds1.getDB().getCollection("product");
                 DBCursor cursor1 = query1.find(new BasicDBObject("isbn", result));
                 List<Product> list1 = new ArrayList<Product>();

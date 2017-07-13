@@ -1,3 +1,5 @@
+package elibBooksProcessed;
+
 import java.sql.SQLException;
 import java.util.StringTokenizer;
 
@@ -16,7 +18,7 @@ import Mongo.ProductCollection.Product;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class Sample 
+public class MissingPIDNest 
 {
  MongoDBMorphia mongoutil = new MongoDBMorphia();
  Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
@@ -25,7 +27,7 @@ public class Sample
  public static WebDriver driver;
   
   
- public Sample()
+ public MissingPIDNest()
   {
   log = Logger.getLogger(this.getClass());
   Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
