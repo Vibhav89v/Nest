@@ -22,6 +22,7 @@ public class Product
    private BookType booktype;
    		
    private String productstatus;
+   private String statusatpublisher;
    private String filedownloadsource;
    private String filedownloaddate;
    private String fileredownloadsource;
@@ -39,7 +40,24 @@ public class Product
    		
    private Boolean adult;
    private Integer aptusid;
-  
+
+   public Integer getId() 
+   {
+		return id;
+   }
+   public void setId(Integer id) 
+   {
+		this.id = id;
+   }  
+   
+   public String getStatusAtPublisher()
+   {
+	return statusatpublisher;
+   }
+   public void setStatusAtPublisher(String statusatpublisher)
+   {
+	this.statusatpublisher = statusatpublisher;
+   }
 public Integer getProvider_productid() {
 	return provider_productid;
 }

@@ -16,7 +16,8 @@ public class RESTTestClient {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) 
+	{
 		ClientResponse clientReponse;
 		AbstractRestClient abstractRestClient =new AbstractRestClient();
 		String userid="nextory_api_user";

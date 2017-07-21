@@ -34,8 +34,9 @@ public class MissingPIDNest
   }
   
   @Test(enabled=true, priority=1, groups={"All"})
-  public void elibToProductTransformation() throws InterruptedException, SQLException
+  public void missingPIDsNest() throws InterruptedException, SQLException
    {
+	System.out.println("------Missing PIDs Nest----------");
     System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
    
     driver=new ChromeDriver();
@@ -56,6 +57,7 @@ public class MissingPIDNest
           DBCollection prodQuery = ds1.getDB().getCollection("product");            
           DBCursor prodCursor = prodQuery.find(new BasicDBObject("provider_productid", result));
             
+          //System.out.println(prodCursor.count());
           if(prodCursor.count()==0)   
           {
            System.out.println("PID not processsed by the Nest :"+result);
@@ -64,7 +66,7 @@ public class MissingPIDNest
           while( prodCursor.hasNext() )
           {
            prodCursor.next();
-           System.out.println("PID processsed by the Nest :" +result);
+          // System.out.println("PID processsed by the Nest :" +result);
           }
            
     }

@@ -34,6 +34,7 @@ public class E2PTest
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds = mongoutil.getMorphiaDatastoreForNestVer2();
+	Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
 	static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	 Elib elib=new Elib();
@@ -64,7 +65,7 @@ public class E2PTest
 	  driver=new ChromeDriver();
 		//----------------------------------ELIB---------------------------------------------------------------
 		String date=AddDate.addingDays(-1);
-	    driver.get("https://xdapi.elib.se/v1.0/products?ServiceID=2238&From="+date+"T13:00&Checksum=c5b42fb8f285b45983bc5325eebd23021a75626bd7edcf4103dce80e71457a50d48dda42ea571dda91511f51854deb9d99a0841c9f36f82ab54f6d19dd5ec6a6");
+	    driver.get("https://xdapi.elib.se/v1.0/products?ServiceID=2238&From="+date+"T00:00&Checksum=c5b42fb8f285b45983bc5325eebd23021a75626bd7edcf4103dce80e71457a50d48dda42ea571dda91511f51854deb9d99a0841c9f36f82ab54f6d19dd5ec6a6");
         String products = driver.findElement(By.id("content")).getText();
 	    
         products=products.replaceAll(",","");
@@ -172,14 +173,15 @@ public class E2PTest
                 System.out.println("'STATUS' IN PRODUCT COLLECTION : "+ dbObj1.get("name") );
                }
            
-  	}
+              	}
              }
              
-        }
+            }
             if(elibDate.equals(productDate))
             {
           	  System.out.println("'lastupdatedon' of 'Elib' and 'updateddate' of 'Product' collection MATCHED");
             }
+            
             else
             {
           	  System.out.println("'lastupdatedon' of 'Elib' and 'updateddate' of 'Product' collection DIDN'T MATCHED");

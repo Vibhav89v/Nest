@@ -7,9 +7,9 @@ import org.mongodb.morphia.annotations.Id;
 @Entity(value="elib_webshop_meta",noClassnameStored=true)
 public class Elib 
 {
- 
+@Id
  private String id;
- /*@Id*/
+
  private Integer ProductID;
  private String UpdatedDate;
  private String Title;

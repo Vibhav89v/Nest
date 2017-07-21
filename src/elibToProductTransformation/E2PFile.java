@@ -106,13 +106,6 @@ public class E2PFile
             Document	lt = new Document("lastupdatedon", new Document("$lt", end)); 
             DBCursor	cursor = query.find(new BasicDBObject("ProductID", result));
             		//.append("$and", Arrays.asList(gt, lt)));
-         
-            
-            //Retriving the fields from the elib collection
-            //System.out.println("LastUpdatedOn="+elib.getLastupdatedon());
-            
-            /*query.criteria("ProductID"+result);
-            query.criteria("lastupdatedon"+iso+("2017-06-26T18:42:06.835Z"));*/
             
  //------------------------------Accessing the Members and Inner Members in a collection---------------------------------------
             List<Elib> list = new ArrayList<Elib>();

@@ -35,7 +35,7 @@ public class E2PTest
 	Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
 	static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  //yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
 
-	Elib elib=new Elib();
+	 Elib elib=new Elib();
 	 Product product=new Product();
 	 String elibDate;
 	 String productDate;

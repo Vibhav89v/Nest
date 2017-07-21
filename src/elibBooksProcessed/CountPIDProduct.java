@@ -37,12 +37,7 @@ public class CountPIDProduct
 	Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
 	static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  //yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
 
-	Elib elib=new Elib();
 	 Product product=new Product();
-	 String elibDate;
-	 String productDate;
-	 String eDate;
-	 String pDate;
 	 public Logger log;
 	 public static WebDriver driver;
 	 int count=0;
@@ -54,9 +49,9 @@ public class CountPIDProduct
 	 }
 	 
 	 @Test(enabled=true, priority=1, groups={"All"})
-	 public void elibToProductTransformation() throws InterruptedException, SQLException
+	 public void gettingCountPIDsElib() throws InterruptedException, SQLException
 	 {
-	  System.out.println("--------------In Elib to Product Transformation flow Meta--------------------");
+	  System.out.println("--------------In 'PRODUCT' Collection Count the Provider Product ID's------------------");
 	  
 	  System.out.println("Fetching all the Product Id's from the url");
 	  
@@ -70,23 +65,33 @@ public class CountPIDProduct
         products=products.replaceAll(",","");
         
         StringTokenizer t = new StringTokenizer(products);
-        String ProductID ="";
+        String Provider_productid ="";
       
         while(t.hasMoreTokens())
         {
-        	ProductID = t.nextToken();
-        	int result = Integer.parseInt(ProductID);
+        	Provider_productid = t.nextToken();
+        	System.out.println();
+        	int result = Integer.parseInt(Provider_productid);
+        	
+        	DBCollection proQuery = ds1.getDB().getCollection("product");  
+            DBCursor	proCursor = proQuery.find(new BasicDBObject("provider_productid", result));
+            System.out.println("'PROVIDER PRODUCT ID' IN PRODUCT COLLECTION: "+result);
+        	count++;
             
-            DBCollection query = ds1.getDB().getCollection("product");            
-            DBCursor	cursor = query.find(new BasicDBObject("provider_productid", result));
-            
-            while( cursor.hasNext() )
+            while( proCursor.hasNext() )
             {
-            	DBObject mObj = cursor.next();
-            	System.out.println("'PROVIDER_PRODUCT ID' OF PRODUCT COLLECTION : "+result);
-            	System.out.println();
-            	count++;
-               
+            	DBObject mObj = proCursor.next();
+    			DBObject mObj2 = (DBObject) mObj.get("publisher");
+            	product.setProvider_productid( (Integer) mObj.get("provider_productid") );
+            	System.out.println("'PRODUCT STATUS' in PRODUCT Collection : "+mObj.get("productstatus"));
+            	if(((String) mObj.get("productstatus")).equalsIgnoreCase("Active"))
+            	{
+            		System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
+            	}
+            	else if(!((String) mObj.get("productstatus")).equalsIgnoreCase("Active"))
+            	{
+            		System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
+            	}
             }
         }
         System.out.println("Total number of Books Processed by NEST : "+count);
