@@ -15,29 +15,32 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
+import Mongo.ElibDistributor.Elib;
 import Mongo.ProductCollection.Product;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class BooksMissedOrUpcomingInNestElib 
+public class ElibMetaPresentNotProcessedNest 
 {
 	 MongoDBMorphia mongoutil = new MongoDBMorphia();
+	 Datastore ds=mongoutil.getMorphiaDatastoreForNestVer2();
 	 Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
 	 Product product=new Product();
+	 Elib elib = new Elib();
 	 public Logger log;
 	 public static WebDriver driver;
 	  
-	 public BooksMissedOrUpcomingInNestElib()
+	  
+	 public ElibMetaPresentNotProcessedNest()
 	  {
 	  log = Logger.getLogger(this.getClass());
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	  }
 	  
 	  @Test(enabled=true, priority=1, groups={"All"})
-	  public void missingOrUpcomingPIDsInfoNest() throws InterruptedException, SQLException
+	  public void missingPIDsNest() throws InterruptedException, SQLException
 	   {
-		 
-		System.out.println("----------Missing PID'S IN PRODUCT collection----------------");
+		//System.out.println("------Missing PIDs Nest----------");
 	    System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
 	   
 	    driver=new ChromeDriver();
@@ -52,26 +55,40 @@ public class BooksMissedOrUpcomingInNestElib
 	    String ProductID ="";
 	    while(t.hasMoreTokens())
 	    {
-	    	  ProductID = t.nextToken();
-	          int result = Integer.parseInt(ProductID);
-	         
-	          DBCollection prodQuery = ds1.getDB().getCollection("product");            
-	          DBCursor prodCursor = prodQuery.find(new BasicDBObject("provider_productid", result));
+	    		ProductID = t.nextToken();
+	    		int result = Integer.parseInt(ProductID);
+	    		
+	    		DBCollection prodQuery = ds1.getDB().getCollection("product");            
+	    		DBCursor prodCursor = prodQuery.find(new BasicDBObject("provider_productid", result));
 	            
-	          while( prodCursor.hasNext() )
-	          {
-	           DBObject mObj = prodCursor.next();
-	           DBObject mObj1 = (DBObject) mObj.get("publisher");
-	           product.setProvider_productid( (Integer) mObj.get("provider_productid"));
+	          //System.out.println(prodCursor.count());
+	    		if(prodCursor.count()==0)   
+	    		{
+	    			System.out.println("PID not processsed by the Nest :"+result);
+         
+	    			DBCollection elibQuery = ds.getDB().getCollection("elib_webshop_meta");
+	    			DBCursor elibCursor = elibQuery.find(new BasicDBObject("ProductID",result));
+		       
+	    			while( elibCursor.hasNext() )
+	    			{
+	    				DBObject mObj = elibCursor.next();
+	    				// System.out.println(mObj.toString());
+	    				elib.setProductId( (Integer) mObj.get("ProductID") );
+	    				System.out.println("_id -> "+mObj.get("_id")+"|| ProductID -> "+mObj.get("ProductID")+"|| isbn -> "+mObj.get("isbn")+"|| Publisher -> "+ mObj.get("Publisher")+" || Title -> "+mObj.get("Title")+" || UpdatedDate -> "+mObj.get("UpdatedDate"));
+	             
 	           
-	           if(((String) mObj.get("productstatus")).equalsIgnoreCase("PARKED") || ((String) mObj.get("productstatus")).equalsIgnoreCase("UPCOMING"))
-	        	   System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
-	           /*else
-	        	   System.out.println("'PRODUCT STATUS' other than 'Upcoming' and 'Parked' ");*/
-	          }
+	    			}
 	           
+	    			while( prodCursor.hasNext() )
+	    			{
+	    				prodCursor.next();
+	         
+	    			}
+	     
+	    		}
+	    		
+	   
 	    }
 	    driver.close();
-	        
-	   }
+	 }
 }

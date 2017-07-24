@@ -25,6 +25,7 @@ public class MissingPIDNest
  Product product=new Product();
  public Logger log;
  public static WebDriver driver;
+ 
   
   
  public MissingPIDNest()
@@ -51,13 +52,12 @@ public class MissingPIDNest
     String ProductID ="";
     while(t.hasMoreTokens())
     {
-     ProductID = t.nextToken();
+    	ProductID = t.nextToken();
           int result = Integer.parseInt(ProductID);
          
           DBCollection prodQuery = ds1.getDB().getCollection("product");            
           DBCursor prodCursor = prodQuery.find(new BasicDBObject("provider_productid", result));
             
-          //System.out.println(prodCursor.count());
           if(prodCursor.count()==0)   
           {
            System.out.println("PID not processsed by the Nest :"+result);
@@ -66,7 +66,7 @@ public class MissingPIDNest
           while( prodCursor.hasNext() )
           {
            prodCursor.next();
-          // System.out.println("PID processsed by the Nest :" +result);
+           //System.out.println("PID processsed by the Nest :" +result);
           }
            
     }

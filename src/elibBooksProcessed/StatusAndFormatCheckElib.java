@@ -6,12 +6,14 @@ import java.text.SimpleDateFormat;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
+import org.bson.Document;
 import org.mongodb.morphia.Datastore;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.Test;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -43,53 +45,43 @@ public class StatusAndFormatCheckElib
 	 {
 	  System.out.println("--------------Checking book's 'Status' and 'Format'--------------------");
 	  
-	  System.out.println("Fetching all the Product Id's from the url");
-	  
-	  System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
-	  
-	  driver=new ChromeDriver();
-
-	  String date=AddDate.addingDays(-1);
-	    driver.get("https://xdapi.elib.se/v1.0/products?ServiceID=2238&From="+date+"T13:00&Checksum=c5b42fb8f285b45983bc5325eebd23021a75626bd7edcf4103dce80e71457a50d48dda42ea571dda91511f51854deb9d99a0841c9f36f82ab54f6d19dd5ec6a6");
-        String products = driver.findElement(By.id("content")).getText();
-	    
-        products=products.replaceAll(",","");
-        
-        StringTokenizer t = new StringTokenizer(products);
-        String ProductID ="";
-        
-        while(t.hasMoreTokens())
-	    {
-	    	  ProductID = t.nextToken();
-	          int result = Integer.parseInt(ProductID);
-	         
 	          DBCollection prodQuery = ds1.getDB().getCollection("product");            
-	          DBCursor prodCursor = prodQuery.find(new BasicDBObject("provider_productid", result));
+	          DBCursor prodCursor = prodQuery.find(new BasicDBObject("productstatus","ACTIVE"));
 	          
-	          driver.get("http://130.211.74.42:8083/nestver2/monitor/elib/api/product/present/"+result);
-	            
 	          while( prodCursor.hasNext() )
 	          {
-	           DBObject mObj = prodCursor.next();
-	           product.setProvider_productid( (Integer) mObj.get("provider_productid"));
+	        	  DBObject mObj = prodCursor.next();
+	          
+	        	  DBObject mObj1 = (DBObject) mObj.get("publisher"); 
+	        	  int prodId=(int) mObj.get("provider_productid");
+	          
+	        	if(mObj1.get("distributorname").equals("ELIB"))
+	        	{
+	        	  if(!(mObj.get("formats")==null) )
+	        	  {
+	        		  BasicDBList dbList = (BasicDBList) mObj.get("formats");
+	        		  BasicDBObject[] dbArr = dbList.toArray(new BasicDBObject[0]);
+	        		  if(dbArr.length==0)
+	        		  {
+	        			  System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || distributorname -> "+mObj1.get("distributorname")+" || productstatus -> "+mObj.get("productstatus")+" || formats -> "+mObj.get("formats"));
+	        			  System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
+	        			  driver=new ChromeDriver();
+	        			  driver.get("http://130.211.74.42:8083/nestver2/monitor/elib/api/product/present/"+prodId);
+	        			  System.out.println();
+	        			  driver.close();
+	        		  }
+	        	  }
 	           
-	           
-	           DBObject mObj1 = (DBObject) mObj.get("formats");
-	           
-	           if(((String) mObj.get("productstatus")).equalsIgnoreCase("Active") || mObj.get("formats") != null)
-	           {
-	        	   System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION IS 'ACTIVE' and 'FORMAT' IS PRESENT ");
-	        	   System.out.println("'FORMAT' IN PRODUCT COLLECTION :"+mObj.get("formats"));
-	        	   System.out.println();
-	           }
-	           else
-	           {
-	        	   System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION IS 'IN-ACTIVE' and 'FORMAT' IS 'NULL'");
-	        	   System.out.println();
-	           }
+	        	  if((mObj.get("formats")==null  )  )
+	        	  {
+	        		  System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || distributorname -> "+mObj1.get("distributorname")+" || productstatus -> "+mObj.get("productstatus")+" || formats -> "+mObj.get("formats"));
+	        		  System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
+	        		  driver=new ChromeDriver();
+	        		  driver.get("http://130.211.74.42:8083/nestver2/monitor/elib/api/product/present/"+prodId);
+	        		  System.out.println();
+	        		  driver.close();
+	        	  }
+	        	}
 	          }
-	    }
-	    driver.close();
-	        
-	 }
+	 	}
 }

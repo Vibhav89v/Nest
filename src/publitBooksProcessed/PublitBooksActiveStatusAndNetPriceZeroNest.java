@@ -18,6 +18,7 @@ import com.sun.jersey.api.client.ClientResponse;
 
 import Mongo.ProductCollection.Product;
 import Mongo.PublitDistributor.Publit;
+import PublitToProductTransformation.Isbn;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 import restClientForPublit.AbstractRestClient;
@@ -26,21 +27,17 @@ import vo.PublitVO;
 
 public class PublitBooksActiveStatusAndNetPriceZeroNest 
 {
-	static String userid = "nextory_api_user";
+	/*static String userid = "nextory_api_user";
 	static String password = "tos559ntio8ge9ep";
-	static String date = AddDate.addingDays(-1);
-	static String URL = "https://api.publit.com/trade/v2.0/products?only=isbn,updated_at&updated_at=" + date+ "&updated_at_args=greater_equal;combinator";
+	static String URL1 = "https://api.publit.com/trade/v2.0/products?with=publisher,files&updated_at=&updated_at_args=greater_equal;combinator";*/
+	
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
-	static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  //yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
 	
-	ClientResponse clientReponse;
-	AbstractRestClient abstractRestClient = new AbstractRestClient();
-	
-	 Publit publit=new Publit();
-	 Product product=new Product();
-	 int count=0;
-	 public Logger log;
+	Publit publit=new Publit();
+	Product product=new Product();
+	int count=0;
+	public Logger log;
 	 
 	 public PublitBooksActiveStatusAndNetPriceZeroNest()
 	 {
@@ -51,52 +48,37 @@ public class PublitBooksActiveStatusAndNetPriceZeroNest
 	 @Test(enabled=true, priority=3, groups={"All"})
 	 public void gettingCountISBN() throws InterruptedException, SQLException
 	 {
-	  log.info("--------------In Publit Counting ISBN--------------------");
+	  log.info("--------------Information of Publit ISBN's with STATUS='ACTIVE' and NET PRICE='0' in NEST-------");
 	  
-	  log.info("Fetching all the ISBN's from the url");
-	  
-	    abstractRestClient.setHTTPBasicAuthFilter(userid, password);
-	    clientReponse = abstractRestClient.get(URL, null, null);
-		PublitVO vo = abstractRestClient.getEntity(clientReponse, PublitVO.class);
-		//=============================System.out.println("Complete Information : "+vo);===================================
-		
+	  /*  PublitVO vo=Isbn.getCompleteInfoPublit(URL1,userid, password); 
+	    
 		List<Datum> data = vo.getData();
 		List<String> isbnList = new ArrayList<>();
 		for (Datum datum : data)
 		{
 			isbnList.add(datum.getIsbn());
 		}
-		//==============================================ISBN List========================================================
-		System.out.println("ISBN being fetched for " + date+ ": " + isbnList);
-		System.out.println("ISBN List Size : "+isbnList.size());
-		//--------------------Fetching the Isbn from ISBN List--------------------------------------------------------- 
+		
 		for(int i=0;i<isbnList.size();i++)
 		{
 			String result=isbnList.get(i);
 			System.out.println("ISBN "+(i+1)+" = " +isbnList.get(i));
-			System.out.println();
+			System.out.println();*/
 			
 			 DBCollection query = ds1.getDB().getCollection("product");           
-	         DBCursor	prodCursor = query.find(new BasicDBObject("isbn", result));
+	         DBCursor	prodCursor = query.find(new BasicDBObject("productstatus", "ACTIVE"));
 	         
 	         while( prodCursor.hasNext() )
 	          {
 	           DBObject mObj = prodCursor.next();
 	           product.setProvider_productid( (Integer) mObj.get("provider_productid"));
+	           DBObject mObj1 = (DBObject)mObj.get("publisher");
 	           
-	           if(((String) mObj.get("productstatus")).equalsIgnoreCase("ACTIVE") && mObj.get("netprice").equals(0))
+	           if(mObj1.get("distributorname").equals("PUBLIT") && (mObj.get("netprice").equals(0.0) || mObj.get("netprice")==null))
 	           {
-	               System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION : "+mObj.get("productstatus"));
-	               System.out.println("'NET PRICE' IN PRODUCT COLLECTION : "+mObj.get("netprice"));
+	        	   System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+" || netprice -> "+mObj.get("netprice")+" || publishername -> "+mObj1.get("publishername")+" || distributorname -> "+mObj1.get("distributorname")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || updateddate -> "+mObj.get("updateddate"));
 	               System.out.println();
-	           }
-	           else
-	           {
-	        	   System.out.println("'PRODUCT STATUS' other than 'Active' ");
-	        	   System.out.println("'NET PRICE' != '0' ");
-	        	   System.out.println();
 	           }
 	          }
 		}
 	}
-}

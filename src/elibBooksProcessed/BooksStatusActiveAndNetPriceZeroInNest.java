@@ -58,10 +58,11 @@ public class BooksStatusActiveAndNetPriceZeroInNest
 	          while( prodCursor.hasNext() )
 	          {
 	           DBObject mObj = prodCursor.next();
+	           DBObject mObj1=(DBObject) mObj.get("publisher");
 	           
-	           if(((String) mObj.get("productstatus")).equalsIgnoreCase("ACTIVE") && mObj.get("netprice").equals(0.0) || mObj.get("netprice").equals(null))
+	           if(mObj1.get("distributorname").equals("ELIB") && (mObj.get("netprice").equals(0.0) || mObj.get("netprice")==null))
 	           {
-	        	   System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+" || netprice -> "+mObj.get("netprice")+" || formats -> "+mObj.get("formats"));
+	        	   System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+" || netprice -> "+mObj.get("netprice")+" || publishername -> "+mObj1.get("publishername")+" || distributorname -> "+mObj1.get("distributorname")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || updateddate -> "+mObj.get("updateddate"));
 	               System.out.println();
 	           }
 	    }

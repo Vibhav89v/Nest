@@ -18,6 +18,7 @@ public class Isbn
 		static String date = AddDate.addingDays(-1);
 		static String URL = "https://api.publit.com/trade/v2.0/products?only=isbn,updated_at&updated_at=" + date
 				+ "&updated_at_args=greater_equal;combinator";
+		static String URL1 = "https://api.publit.com/trade/v2.0/products?with=publisher,files&updated_at=&updated_at_args=greater_equal;combinator";
 
 		// ----------------------------------Complete Publit information----------------------------------------
 
@@ -53,11 +54,21 @@ public class Isbn
 	 * @param password
 	 * @return
 	 */
-	private static PublitVO getIsbnFrPublit(String URL, String userId, String password) {
+	public static PublitVO getIsbnFrPublit(String URL, String userId, String password) {
 		ClientResponse clientReponse;
 		AbstractRestClient abstractRestClient = new AbstractRestClient();
 		abstractRestClient.setHTTPBasicAuthFilter(userId, password);
 		clientReponse = abstractRestClient.get(URL, null, null);
+		PublitVO vo = abstractRestClient.getEntity(clientReponse, PublitVO.class);
+		System.out.println(vo);
+		return vo;
+	}
+	
+	public static PublitVO getCompleteInfoPublit(String URL1, String userId, String password) {
+		ClientResponse clientReponse;
+		AbstractRestClient abstractRestClient = new AbstractRestClient();
+		abstractRestClient.setHTTPBasicAuthFilter(userId, password);
+		clientReponse = abstractRestClient.get(URL1, null, null);
 		PublitVO vo = abstractRestClient.getEntity(clientReponse, PublitVO.class);
 		System.out.println(vo);
 		return vo;

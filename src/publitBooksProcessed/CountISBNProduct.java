@@ -83,11 +83,24 @@ public class CountISBNProduct
 	            while( cursor.hasNext() )
 	            {
 	            	DBObject mObj = cursor.next();
+	            	DBObject mObj2 = (DBObject) mObj.get("publisher");
+	            	product.setIsbn( (String) mObj.get("isbn") );
 	            	System.out.println("'ISBN' OF PRODUCT COLLECTION : "+result);
-	            	System.out.println();
-	            	count++;
+	            	if(((String) mObj.get("productstatus")).equalsIgnoreCase("Active"))
+	            	{
+	            		System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
+	            		System.out.println();
+	            		count++;
+	            	}
+	            	else if(!((String) mObj.get("productstatus")).equalsIgnoreCase("Active"))
+	            	{
+	            		System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
+	            		System.out.println();
+	            		count++;
+	            	}
 	            }
-	    }
+		}
 	        System.out.println("Total number of Books Processed by NEST : "+count);
+		
 	}
 }

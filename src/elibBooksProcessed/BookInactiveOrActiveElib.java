@@ -82,7 +82,7 @@ public class BookInactiveOrActiveElib
               DBCollection elibQuery = ds.getDB().getCollection("elib_webshop_meta");  
               DBCursor	elibCursor = elibQuery.find(new BasicDBObject("ProductID", prodId));
               
-              while( elibCursor.hasNext() )
+              while( elibCursor.hasNext())
               {
                DBObject mObj1 = elibCursor.next();
                elib.setProductId( (Integer) mObj1.get("ProductID") );

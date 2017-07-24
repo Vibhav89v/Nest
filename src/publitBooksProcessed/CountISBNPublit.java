@@ -71,7 +71,7 @@ public class CountISBNPublit
 		}
 		//==============================================ISBN List========================================================
 		System.out.println("ISBN being fetched for " + date+ ": " + isbnList);
-		System.out.println("ISBN List Size : "+isbnList.size());
+		//System.out.println("ISBN List Size : "+isbnList.size());
 		//--------------------Fetching the Isbn from ISBN List--------------------------------------------------------- 
 		for(int i=0;i<isbnList.size();i++)
 		{
@@ -89,5 +89,7 @@ public class CountISBNPublit
 	            	publit.setIsbn( (String) mObj.get("isbn"));
 	            }
 	     }
+		System.out.println();
+		System.out.println("===Total number of ISBN being fetched====>>"+isbnList.size());
 	}
 }

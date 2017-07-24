@@ -83,14 +83,17 @@ public class CountPIDProduct
             	DBObject mObj = proCursor.next();
     			DBObject mObj2 = (DBObject) mObj.get("publisher");
             	product.setProvider_productid( (Integer) mObj.get("provider_productid") );
-            	System.out.println("'PRODUCT STATUS' in PRODUCT Collection : "+mObj.get("productstatus"));
+            	//System.out.println();
+            	//System.out.println("'PRODUCT STATUS' in PRODUCT Collection : "+mObj.get("productstatus"));
             	if(((String) mObj.get("productstatus")).equalsIgnoreCase("Active"))
             	{
             		System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
+            		System.out.println();
             	}
             	else if(!((String) mObj.get("productstatus")).equalsIgnoreCase("Active"))
             	{
             		System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
+            		System.out.println();
             	}
             }
         }
