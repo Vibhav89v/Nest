@@ -18,16 +18,18 @@ import com.sun.jersey.api.client.ClientResponse;
 
 import Mongo.ProductCollection.Product;
 import Mongo.PublitDistributor.Publit;
+import common.AutomationConstants;
 import generics.AddDate;
 import generics.MongoDBMorphia;
+import generics.Property;
 import restClientForPublit.AbstractRestClient;
-import vo.Datum;
-import vo.PublitVO;
+import valueObject.Datum;
+import valueObject.PublitVO;
 
-public class PublitMetaExistNotProcessedInNest 
+public class PublitMetaExistNotProcessedInNest implements AutomationConstants
 {
-	static String userid = "nextory_api_user";
-	static String password = "tos559ntio8ge9ep";
+	static String userid = Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "USERID");
+	static String password = Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "PASSWORD");
 	static String date = AddDate.addingDays(-21);
 	static String URL = "https://api.publit.com/trade/v2.0/products?only=isbn,updated_at&updated_at=" + date+ "&updated_at_args=greater_equal;combinator";
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
@@ -58,7 +60,7 @@ public class PublitMetaExistNotProcessedInNest
 	    abstractRestClient.setHTTPBasicAuthFilter(userid, password);
 	    clientReponse = abstractRestClient.get(URL, null, null);
 		PublitVO vo = abstractRestClient.getEntity(clientReponse, PublitVO.class);
-		//=============================System.out.println("Complete Information : "+vo);===================================
+		//=============================log.info("Complete Information : "+vo);===================================
 		
 		List<Datum> data = vo.getData();
 		List<String> isbnList = new ArrayList<>();
@@ -67,21 +69,21 @@ public class PublitMetaExistNotProcessedInNest
 			isbnList.add(datum.getIsbn());
 		}
 		//==============================================ISBN List========================================================
-		System.out.println("ISBN being fetched for " + date+ ": " + isbnList);
-		System.out.println("ISBN List Size : "+isbnList.size());
+		log.info("ISBN being fetched for " + date+ ": " + isbnList);
+		log.info("ISBN List Size : "+isbnList.size());
 		//--------------------Fetching the Isbn from ISBN List--------------------------------------------------------- 
 		for(int i=0;i<isbnList.size();i++)
 		{
 			String result=isbnList.get(i);
-			//System.out.println("ISBN "+(i+1)+" = " +isbnList.get(i));
-			//System.out.println();
+			//log.info("ISBN "+(i+1)+" = " +isbnList.get(i));
+			//log.info();
 			
 			 DBCollection prodQuery = ds.getDB().getCollection("product");           
 	         DBCursor	prodCursor = prodQuery.find(new BasicDBObject("isbn", result));
 	            
 	         if(prodCursor.count()==0)   
 	         {
-	        	 System.out.println("ISBN not processed in Nest :"+result);
+	        	 log.info("ISBN not processed in Nest :"+result);
 	           
 	        	 DBCollection publitQuery = ds.getDB().getCollection("publit_meta_info");
    			   	 DBCursor publitCursor = publitQuery.find(new BasicDBObject("isbn",result));
@@ -90,16 +92,16 @@ public class PublitMetaExistNotProcessedInNest
    			   	 {
    			   		 DBObject mObj = publitCursor.next();
    			   		 publit.setIsbn((String)mObj.get("isbn"));
-   			   		 System.out.println("_id -> "+mObj.get("_id")+"|| active -> "+mObj.get("active")+"|| available_at -> "+mObj.get("available_at"));
-   			   		 System.out.println();
+   			   		 log.info("_id -> "+mObj.get("_id")+"|| active -> "+mObj.get("active")+"|| available_at -> "+mObj.get("available_at"));
+   			   		 log.info("");
    			   	 }
    			 }
 	           
 	          while( prodCursor.hasNext() )
 	          {
 	        	  prodCursor.next();
-	          // System.out.println("ISBN processsed by the Nest :" +result);
-	           //System.out.println();
+	          // log.info("ISBN processsed by the Nest :" +result);
+	           //log.info();
 	          }
 	     }
 	}

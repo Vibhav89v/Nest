@@ -17,10 +17,11 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 import Mongo.ElibDistributor.Elib;
+import common.AutomationConstants;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class CountPIDElib 
+public class CountPIDElib implements AutomationConstants
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds = mongoutil.getMorphiaDatastoreForNestVer2();
@@ -39,11 +40,11 @@ public class CountPIDElib
 	 @Test(enabled=true, priority=1, groups={"All"})
 	 public void countFetchedPIDsElib() throws InterruptedException, SQLException
 	 {
-	  System.out.println("--------------From Elib Counting ProductID being Fetched--------------------");
+	  log.info("--------------From Elib Counting ProductID being Fetched--------------------");
 	  
-	  System.out.println("Fetching all the Product Id's from the url");
+	  log.info("Fetching all the Product Id's from the url");
 	  
-	  System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
+	  System.setProperty(CHROME_KEY,DRIVER_PATH+CHROME_FILE);
 	  
 	  driver=new ChromeDriver();
 		//----------------------------------ELIB---------------------------------------------------------------
@@ -58,12 +59,12 @@ public class CountPIDElib
         while(t.hasMoreTokens())
         {
         	ProductID = t.nextToken();
-        	System.out.println();
+        	log.info("");
         	int result = Integer.parseInt(ProductID);
         	
         	DBCollection elibQuery = ds.getDB().getCollection("elib_webshop_meta");  
             DBCursor	elibCursor = elibQuery.find(new BasicDBObject("ProductID", result));
-            System.out.println("'ProductID' IN ELIB COLLECTION: "+result);
+            log.info("'ProductID' IN ELIB COLLECTION: "+result);
         	count++;
            
             while( elibCursor.hasNext() )
@@ -77,19 +78,19 @@ public class CountPIDElib
                 {
                 	 if(dbObj.get("Name").equals("Active"))
                      {
-                     	System.out.println("_id -> "+mObj.get("_id")+"|| ProductID -> "+mObj.get("ProductID")+"|| Publisher -> "+ mObj.get("Publisher")+"|| ELIB STATUS -> PRESENT");
+                     	log.info("_id -> "+mObj.get("_id")+"|| ProductID -> "+mObj.get("ProductID")+"|| Publisher -> "+ mObj.get("Publisher")+"|| ELIB STATUS -> PRESENT");
                      }
                      else if(!dbObj.get("Name").equals("Active"))
                      {
-                    	 System.out.println("_id -> "+mObj.get("_id")+"|| ProductID -> "+mObj.get("ProductID")+"|| Publisher -> "+ mObj.get("Publisher")+"|| ELIB STATUS -> NOT PRESENT");
+                    	 log.info("_id -> "+mObj.get("_id")+"|| ProductID -> "+mObj.get("ProductID")+"|| Publisher -> "+ mObj.get("Publisher")+"|| ELIB STATUS -> NOT PRESENT");
                      }
-                     System.out.println();
+                     log.info("");
                 }
             }
             
         }
-        System.out.println();
-        System.out.println("========Total number of 'ProductID's' being fetched===>> : "+count);
+        log.info("");
+        log.info("========Total number of 'ProductID's' being fetched===>> : "+count);
         driver.close();
   }
 }

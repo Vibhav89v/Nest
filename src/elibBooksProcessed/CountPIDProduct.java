@@ -26,11 +26,12 @@ import com.mongodb.DBObject;
 import Mongo.ElibDistributor.Elib;
 import Mongo.ProductCollection.Product;
 import Mongo.ProductCollection.Publisher;
+import common.AutomationConstants;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
 
-public class CountPIDProduct
+public class CountPIDProduct implements AutomationConstants
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds = mongoutil.getMorphiaDatastoreForNestVer2();
@@ -51,11 +52,11 @@ public class CountPIDProduct
 	 @Test(enabled=true, priority=1, groups={"All"})
 	 public void gettingCountPIDsElib() throws InterruptedException, SQLException
 	 {
-	  System.out.println("--------------In 'PRODUCT' Collection Count the Provider Product ID's------------------");
+	  log.info("--------------In 'PRODUCT' Collection Count the Provider Product ID's------------------");
 	  
-	  System.out.println("Fetching all the Product Id's from the url");
+	  log.info("Fetching all the Product Id's from the url");
 	  
-	  System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
+	  System.setProperty(CHROME_KEY, DRIVER_PATH+CHROME_FILE);
 	  
    	    driver=new ChromeDriver();
 		String date=AddDate.addingDays(-1);
@@ -70,12 +71,12 @@ public class CountPIDProduct
         while(t.hasMoreTokens())
         {
         	Provider_productid = t.nextToken();
-        	System.out.println();
+        	log.info("");
         	int result = Integer.parseInt(Provider_productid);
         	
         	DBCollection proQuery = ds1.getDB().getCollection("product");  
             DBCursor	proCursor = proQuery.find(new BasicDBObject("provider_productid", result));
-            System.out.println("'PROVIDER PRODUCT ID' IN PRODUCT COLLECTION: "+result);
+            log.info("'PROVIDER PRODUCT ID' IN PRODUCT COLLECTION: "+result);
         	count++;
             
             while( proCursor.hasNext() )
@@ -83,21 +84,21 @@ public class CountPIDProduct
             	DBObject mObj = proCursor.next();
     			DBObject mObj2 = (DBObject) mObj.get("publisher");
             	product.setProvider_productid( (Integer) mObj.get("provider_productid") );
-            	//System.out.println();
-            	//System.out.println("'PRODUCT STATUS' in PRODUCT Collection : "+mObj.get("productstatus"));
+            	//log.info();
+            	//log.info("'PRODUCT STATUS' in PRODUCT Collection : "+mObj.get("productstatus"));
             	if(((String) mObj.get("productstatus")).equalsIgnoreCase("Active"))
             	{
-            		System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
-            		System.out.println();
+            		log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
+            		log.info("");
             	}
             	else if(!((String) mObj.get("productstatus")).equalsIgnoreCase("Active"))
             	{
-            		System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
-            		System.out.println();
+            		log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
+            		log.info("");
             	}
             }
         }
-        System.out.println("Total number of Books Processed by NEST : "+count);
+        log.info("Total number of Books Processed by NEST : "+count);
         driver.close();
      }
 }

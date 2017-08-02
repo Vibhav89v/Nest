@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -16,11 +18,12 @@ public class Database implements AutomationConstants
 	public static String username=Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "DBUSER"); //root
 	public static String password=Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "DBPWD");  //test
 	static Logger log = Logger.getLogger(Database.class);
-	
+	public static List<String> li;
 	
 	
 	public static String executeQuery(String query1)  
 	{
+		li= new ArrayList<String>();
 		Connection con = null;
 		Statement stmt = null;
 		ResultSet result = null;
@@ -43,7 +46,10 @@ public class Database implements AutomationConstants
 	    while(result.next())
 	    {
 	        account = result.getString(1);
-            log.info(account);    //Id fetched is
+            //log.info(account);    //Id fetched is
+           
+            li.add(account);
+            
         }
 	    con.close();
 	    return account;
@@ -115,8 +121,6 @@ public class Database implements AutomationConstants
 			}
 		}
 		return 0;
-		
-		
 	}
 	
 	public Connection getConnection()
@@ -137,7 +141,6 @@ public class Database implements AutomationConstants
 	   System.err.println("Got an exception! ");
 	   System.err.println(e.getMessage());
 	  }
-	  
 	  return con;
 	 }
 }

@@ -1,41 +1,34 @@
 package elibBooksProcessed;
 
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.StringTokenizer;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
-import org.mongodb.morphia.Datastore;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.bson.Document;
 import org.testng.annotations.Test;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-
 import Mongo.ProductCollection.Product;
-import generics.AddDate;
-import generics.MongoDBMorphia;
+import common.AutomationConstants;
+import generics.Excel;
+import mongoclient.AppMongoClientImpl;
 
-public class DifferencePerDayElib
+public class DifferencePerDayElib implements AutomationConstants
 {
-	MongoDBMorphia mongoutil = new MongoDBMorphia();
-	Datastore ds = mongoutil.getMorphiaDatastoreForNestVer2();
-	Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
-	static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  //yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
-
 	 Product product=new Product();
 	 public Logger log;
-	 public static WebDriver driver;
-	 public static WebDriver driver1;
-	 int count1=0;
-	 int count2=0;
+	 public static String date;
+	 public static long count;
+	 public static long countActive;
+	 public static long countDeleted;
+	 public static long countA_INACTIVE;
+	 public static long countP_INACTIVE;
+	 public static long countA_OMITTED;
+	 public static long countPARKED;
+	 public static long countL_INACTIVE;
+	 public static long countERROR;
+	 public static long countP_DEFERRED;
+	 public static long countUPCOMING;
+	 public static long countHIGH_PRICE;
+	 public static String path;
 	 
 	 public DifferencePerDayElib()
 	 {
@@ -43,71 +36,73 @@ public class DifferencePerDayElib
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	 }
 	 
-	 @Test(enabled=true, priority=1, groups={"All"})
-	 public void diffCalculationElib() throws InterruptedException, SQLException
+	 @Test(enabled=true, priority=3, groups={"All"})
+	 public void differncePerDayELIB() throws InterruptedException, SQLException
 	 {
-	  System.out.println("--------------Difference in PID's being fetched-----------------");
-	  
-	  System.out.println("Fetching all the Product Id's from the url");
-	  
-	  System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
-	  System.setProperty("webdriver.gecko.driver", "./Drivers/geckodriver.exe" );
-	  
-   	    driver=new ChromeDriver();
-   	    driver1=new FirefoxDriver();
-   	    driver.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
-   	    driver1.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
-		String date1=AddDate.addingDays(-1);
-		String date2=AddDate.addingDays(-2);
-	    driver.get("https://xdapi.elib.se/v1.0/products?ServiceID=2238&From="+date1+"T13:00&Checksum=c5b42fb8f285b45983bc5325eebd23021a75626bd7edcf4103dce80e71457a50d48dda42ea571dda91511f51854deb9d99a0841c9f36f82ab54f6d19dd5ec6a6");
-	    driver1.get("https://xdapi.elib.se/v1.0/products?ServiceID=2238&From="+date2+"T13:00&Checksum=c5b42fb8f285b45983bc5325eebd23021a75626bd7edcf4103dce80e71457a50d48dda42ea571dda91511f51854deb9d99a0841c9f36f82ab54f6d19dd5ec6a6");
-        String products = driver.findElement(By.id("content")).getText();
-        String products1 = driver1.findElement(By.id("content")).getText();
-        
-        products=products.replaceAll(",","");
-        products1=products1.replaceAll(",","");
-        
-        StringTokenizer t = new StringTokenizer(products);
-        StringTokenizer t1 = new StringTokenizer(products1);
-        String ProductID ="";
-        String ProductID1 ="";
-      
-        while(t.hasMoreTokens())
-        {
-        	ProductID = t.nextToken();
-        	int result1 = Integer.parseInt(ProductID);
-        	count1++;
-        	
-            DBCollection query1 = ds1.getDB().getCollection("product");            
-            DBCursor	cursor1 = query1.find(new BasicDBObject("provider_productid", result1));
-            
-            while( cursor1.hasNext())
-            {
-            	DBObject mObj1 = cursor1.next();
-            	System.out.println("'PROVIDER_PRODUCT ID' OF "+date1+" PRODUCT COLLECTION : "+result1);
-            	System.out.println();
-            }
-        }
-        while(t1.hasMoreTokens())
-        {
-        	ProductID1 =t1.nextToken();
-        	int result2 = Integer.parseInt(ProductID1);
-        	count2++;
-        	
-            DBCollection query = ds1.getDB().getCollection("product");            
-            DBCursor	cursor2 = query.find(new BasicDBObject("provider_productid", result2));
-            
-            while(cursor2.hasNext())
-            {
-            	DBObject mObj2 = cursor2.next();
-            	System.out.println("'PROVIDER_PRODUCT ID' OF" +date2+" PRODUCT COLLECTION : "+result2);
-            	System.out.println();
-            }
-        }
-        System.out.println("Total number of Books Processed by NEST on "+date1+" : "+count1);
-        System.out.println("Total number of Books Processed by NEST on "+date2+": "+count2);
-        System.out.println("Difference of the PID's being processed : "+(count2-count1));
-        driver.close();
-        driver1.close();
-     }
+		  log.info("--------------In PRODUCT Collection checking 'STATUS' of the Current day--------------------");
+		  
+		  count  = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("publisher.distributorname","ELIB"));
+		  countActive  = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","ACTIVE").append("publisher.distributorname","ELIB" ));
+		  countDeleted  = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","DELETED").append("publisher.distributorname","ELIB" ));
+		   countA_INACTIVE  = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","A_INACTIVE").append("publisher.distributorname","ELIB" ));
+		   countP_INACTIVE = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","P_INACTIVE").append("publisher.distributorname","ELIB" ));
+		   countA_OMITTED  = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","A_OMITTED").append("publisher.distributorname","ELIB" ));
+		   countPARKED  = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","PARKED").append("publisher.distributorname","ELIB" ));
+		   countL_INACTIVE = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","L_INACTIVE").append("publisher.distributorname","ELIB" ));
+		   countERROR  = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","ERROR").append("publisher.distributorname","ELIB" ));
+		   countP_DEFERRED  = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","P_DEFERRED").append("publisher.distributorname","ELIB" ));
+		   countUPCOMING = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","UPCOMING").append("publisher.distributorname","ELIB" ));
+		   countHIGH_PRICE = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","HIGH_PRICE").append("publisher.distributorname","ELIB" ));
+		
+	    		 log.info("=========FINAL STATUS==========");
+	    		 log.info("Total COUNT for 'ELIB' : "+count);
+	    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'ACTIVE'    || count : " + countActive);
+	    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'DELETED'   || count : " + countDeleted);
+	    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'A_INACTIVE'|| count : " + countA_INACTIVE);
+	    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'P_INACTIVE'|| count : " + countP_INACTIVE);
+	    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'A_OMITTED' || count : " + countA_OMITTED);
+	    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'PARKED'    || count : " + countPARKED);
+	    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'L_INACTIVE'|| count : " + countL_INACTIVE);
+	    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'ERROR'     || count : " + countERROR);
+	    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'P_DEFERRED'|| count : " + countP_DEFERRED);
+	    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'UPCOMING'  || count : " + countUPCOMING);
+	    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'HIGH_PRICE'|| count : " + countHIGH_PRICE);
+	    		 
+	    		Excel.setExcelDataNest(INPUT_PATH,"ELIB", date, countActive, countDeleted, countA_INACTIVE, countP_INACTIVE, countA_OMITTED, countPARKED, countL_INACTIVE, countERROR, countP_DEFERRED, countUPCOMING, countHIGH_PRICE);
+	    		double activeDiff = Excel.comparingCells(INPUT_PATH,"ELIB", 2);
+	    		log.info("THE DIFFERENCE BETWEEN THE ACTIVE COUNTS : "+activeDiff);
+	    		
+	    		double a_InactiveDiff = Excel.comparingCells(INPUT_PATH,"ELIB", 3);
+	    		log.info("THE DIFFERENCE BETWEEN THE A_INACTIVE COUNTS : "+a_InactiveDiff);
+	    		
+	    		double p_InactiveDiff = Excel.comparingCells(INPUT_PATH,"ELIB", 4);
+	    		log.info("THE DIFFERENCE BETWEEN THE P_ACTIVE COUNTS : "+p_InactiveDiff);
+	    		
+	    		double deletedDiff = Excel.comparingCells(INPUT_PATH,"ELIB", 5);
+	    		log.info("THE DIFFERENCE BETWEEN THE DELETED COUNTS : "+deletedDiff);
+	    		
+	    		double parkedDiff = Excel.comparingCells(INPUT_PATH,"ELIB", 6);
+	    		log.info("THE DIFFERENCE BETWEEN THE PARKED COUNTS : "+parkedDiff);
+	    		
+	    		double upcomingDiff = Excel.comparingCells(INPUT_PATH,"ELIB", 7);
+	    		log.info("THE DIFFERENCE BETWEEN THE UPCOMING COUNTS : "+upcomingDiff);
+	    		
+	    		double a_OmittedDiff = Excel.comparingCells(INPUT_PATH,"ELIB", 8);
+	    		log.info("THE DIFFERENCE BETWEEN THE A_OMITTED COUNTS : "+a_OmittedDiff);
+	    		
+	    		double deleteDiff = Excel.comparingCells(INPUT_PATH,"ELIB", 9);
+	    		log.info("THE DIFFERENCE BETWEEN THE DELETED COUNTS : "+deleteDiff);
+	    		
+	    		double l_InactiveDiff = Excel.comparingCells(INPUT_PATH,"ELIB", 10);
+	    		log.info("THE DIFFERENCE BETWEEN THE L_INACTIVE COUNTS : "+l_InactiveDiff);
+	    		
+	    		double errorDiff = Excel.comparingCells(INPUT_PATH,"ELIB", 11);
+	    		log.info("THE DIFFERENCE BETWEEN THE ERROR COUNTS : "+errorDiff);
+	    		
+	    		double p_DefferedDiff = Excel.comparingCells(INPUT_PATH,"ELIB", 12);
+	    		log.info("THE DIFFERENCE BETWEEN THE P_DEFFERED COUNTS : "+p_DefferedDiff);
+	    		
+	    		double highPriceDiff = Excel.comparingCells(INPUT_PATH,"ELIB", 13);
+	    		log.info("THE DIFFERENCE BETWEEN THE HIGHPRICE COUNTS : "+highPriceDiff);
+		 }
 }

@@ -1,3 +1,4 @@
+package ExcelDistributor;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -58,19 +59,19 @@ public class NestStatusCurrentDayExcel
 	  long count10 = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","UPCOMING").append("publisher.distributorname","" ));
 	  long count11 = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","HIGH_PRICE").append("publisher.distributorname","" ));
 	
-    		 System.out.println("=========FINAL STATUS==========");
-    		 System.out.println("Total COUNT for 'EXCEL' : "+count);
-    		 System.out.println("publisher.distributorname : 'EXCEL'|| productstatus :'ACTIVE'    || count : " + count1);
-    		 System.out.println("publisher.distributorname : 'EXCEL'|| productstatus :'DELETED'   || count : " + count2);
-    		 System.out.println("publisher.distributorname : 'EXCEL'|| productstatus :'A_INACTIVE'|| count : " + count3);
-    		 System.out.println("publisher.distributorname : 'EXCEL'|| productstatus :'P_INACTIVE'|| count : " + count4);
-    		 System.out.println("publisher.distributorname : 'EXCEL'|| productstatus :'A_OMITTED' || count : " + count5);
-    		 System.out.println("publisher.distributorname : 'EXCEL'|| productstatus :'PARKED'    || count : " + count6);
-    		 System.out.println("publisher.distributorname : 'EXCEL'|| productstatus :'L_INACTIVE'|| count : " + count7);
-    		 System.out.println("publisher.distributorname : 'EXCEL'|| productstatus :'ERROR'     || count : " + count8);
-    		 System.out.println("publisher.distributorname : 'EXCEL'|| productstatus :'P_DEFERRED'|| count : " + count9);
-    		 System.out.println("publisher.distributorname : 'EXCEL'|| productstatus :'UPCOMING'  || count : " + count10);
-    		 System.out.println("publisher.distributorname : 'EXCEL'|| productstatus :'HIGH_PRICE'|| count : " + count11);
+    		 log.info("=========FINAL STATUS==========");
+    		 log.info("Total COUNT for 'EXCEL' : "+count);
+    		 log.info("publisher.distributorname : 'EXCEL'|| productstatus :'ACTIVE'    || count : " + count1);
+    		 log.info("publisher.distributorname : 'EXCEL'|| productstatus :'DELETED'   || count : " + count2);
+    		 log.info("publisher.distributorname : 'EXCEL'|| productstatus :'A_INACTIVE'|| count : " + count3);
+    		 log.info("publisher.distributorname : 'EXCEL'|| productstatus :'P_INACTIVE'|| count : " + count4);
+    		 log.info("publisher.distributorname : 'EXCEL'|| productstatus :'A_OMITTED' || count : " + count5);
+    		 log.info("publisher.distributorname : 'EXCEL'|| productstatus :'PARKED'    || count : " + count6);
+    		 log.info("publisher.distributorname : 'EXCEL'|| productstatus :'L_INACTIVE'|| count : " + count7);
+    		 log.info("publisher.distributorname : 'EXCEL'|| productstatus :'ERROR'     || count : " + count8);
+    		 log.info("publisher.distributorname : 'EXCEL'|| productstatus :'P_DEFERRED'|| count : " + count9);
+    		 log.info("publisher.distributorname : 'EXCEL'|| productstatus :'UPCOMING'  || count : " + count10);
+    		 log.info("publisher.distributorname : 'EXCEL'|| productstatus :'HIGH_PRICE'|| count : " + count11);
 	 }
 	
   }

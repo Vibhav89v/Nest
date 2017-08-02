@@ -17,10 +17,11 @@ import com.mongodb.DBObject;
 
 import Mongo.ElibDistributor.Elib;
 import Mongo.ProductCollection.Product;
+import common.AutomationConstants;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class ElibMetaPresentNotProcessedNest 
+public class ElibMetaPresentNotProcessedNest implements AutomationConstants
 {
 	 MongoDBMorphia mongoutil = new MongoDBMorphia();
 	 Datastore ds=mongoutil.getMorphiaDatastoreForNestVer2();
@@ -40,8 +41,8 @@ public class ElibMetaPresentNotProcessedNest
 	  @Test(enabled=true, priority=1, groups={"All"})
 	  public void missingPIDsNest() throws InterruptedException, SQLException
 	   {
-		//System.out.println("------Missing PIDs Nest----------");
-	    System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
+		//log.info("------Missing PIDs Nest----------");
+		  System.setProperty(CHROME_KEY, DRIVER_PATH+CHROME_FILE);
 	   
 	    driver=new ChromeDriver();
 	  
@@ -61,10 +62,10 @@ public class ElibMetaPresentNotProcessedNest
 	    		DBCollection prodQuery = ds1.getDB().getCollection("product");            
 	    		DBCursor prodCursor = prodQuery.find(new BasicDBObject("provider_productid", result));
 	            
-	          //System.out.println(prodCursor.count());
+	          //log.info(prodCursor.count());
 	    		if(prodCursor.count()==0)   
 	    		{
-	    			System.out.println("PID not processsed by the Nest :"+result);
+	    			log.info("PID not processsed by the Nest :"+result);
          
 	    			DBCollection elibQuery = ds.getDB().getCollection("elib_webshop_meta");
 	    			DBCursor elibCursor = elibQuery.find(new BasicDBObject("ProductID",result));
@@ -72,9 +73,9 @@ public class ElibMetaPresentNotProcessedNest
 	    			while( elibCursor.hasNext() )
 	    			{
 	    				DBObject mObj = elibCursor.next();
-	    				// System.out.println(mObj.toString());
+	    				// log.info(mObj.toString());
 	    				elib.setProductId( (Integer) mObj.get("ProductID") );
-	    				System.out.println("_id -> "+mObj.get("_id")+"|| ProductID -> "+mObj.get("ProductID")+"|| isbn -> "+mObj.get("isbn")+"|| Publisher -> "+ mObj.get("Publisher")+" || Title -> "+mObj.get("Title")+" || UpdatedDate -> "+mObj.get("UpdatedDate"));
+	    				log.info("_id -> "+mObj.get("_id")+"|| ProductID -> "+mObj.get("ProductID")+"|| isbn -> "+mObj.get("isbn")+"|| Publisher -> "+ mObj.get("Publisher")+" || Title -> "+mObj.get("Title")+" || UpdatedDate -> "+mObj.get("UpdatedDate"));
 	             
 	           
 	    			}

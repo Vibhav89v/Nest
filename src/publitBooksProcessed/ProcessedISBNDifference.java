@@ -18,16 +18,18 @@ import com.sun.jersey.api.client.ClientResponse;
 
 import Mongo.ProductCollection.Product;
 import Mongo.PublitDistributor.Publit;
+import common.AutomationConstants;
 import generics.AddDate;
 import generics.MongoDBMorphia;
+import generics.Property;
 import restClientForPublit.AbstractRestClient;
-import vo.Datum;
-import vo.PublitVO;
+import valueObject.Datum;
+import valueObject.PublitVO;
 
-public class ProcessedISBNDifference 
+public class ProcessedISBNDifference implements AutomationConstants
 {
-	static String userid = "nextory_api_user";
-	static String password = "tos559ntio8ge9ep";
+	static String userid = Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "USERID");
+	static String password = Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "PASSWORD");
 	static String date = AddDate.addingDays(-1);
 	static String URL = "https://api.publit.com/trade/v2.0/products?only=isbn,updated_at&updated_at=" + date+ "&updated_at_args=greater_equal;combinator";
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
@@ -58,7 +60,7 @@ public class ProcessedISBNDifference
 	    abstractRestClient.setHTTPBasicAuthFilter(userid, password);
 	    clientReponse = abstractRestClient.get(URL, null, null);
 		PublitVO vo = abstractRestClient.getEntity(clientReponse, PublitVO.class);
-		//=============================System.out.println("Complete Information : "+vo);===================================
+		//=============================log.info("Complete Information : "+vo);===================================
 		
 		List<Datum> data = vo.getData();
 		List<String> isbnList = new ArrayList<>();
@@ -67,13 +69,13 @@ public class ProcessedISBNDifference
 			isbnList.add(datum.getIsbn());
 		}
 		//==============================================ISBN List========================================================
-		System.out.println("ISBN being fetched for " + date+ ": " + isbnList);
-		System.out.println("ISBN List Size : "+isbnList.size());
+		log.info("ISBN being fetched for " + date+ ": " + isbnList);
+		log.info("ISBN List Size : "+isbnList.size());
 		//--------------------Fetching the Isbn from ISBN List--------------------------------------------------------- 
 		for(int i=0;i<isbnList.size();i++)
 		{
 			String result=isbnList.get(i);
-			System.out.println("ISBN "+(i+1)+" = " +isbnList.get(i));
+			log.info("ISBN "+(i+1)+" = " +isbnList.get(i));
 			
 			 DBCollection query = ds1.getDB().getCollection("product");           
 	         DBCursor	prodCursor = query.find(new BasicDBObject("isbn", result));
@@ -88,7 +90,7 @@ public class ProcessedISBNDifference
 	           }
 	           catch(NumberFormatException e)
 	           {
-	        	   System.out.println("Enterd a non-integer value");
+	        	   log.info("Enterd a non-integer value");
 	           }
 	         }
 		}

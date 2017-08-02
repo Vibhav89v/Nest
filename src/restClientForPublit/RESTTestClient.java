@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.sun.jersey.api.client.ClientResponse;
 
 import PublitToProductTransformation.Isbn;
-import vo.PublitVO;
+import valueObject.PublitVO;
 
 public class RESTTestClient {
 	

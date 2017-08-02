@@ -36,7 +36,7 @@ public class BooksStatusActiveAndNetPriceZeroInNest
 	  @Test(enabled=true, priority=1, groups={"All"})
 	  public void detailOfActiveStatusAndNetPriceZeroInNest() throws InterruptedException, SQLException
 	   {
-		System.out.println("--------Details of 'Active' PID's and 'NET PRICE = 0' in NEST------------------");
+		log.info("--------Details of 'Active' PID's and 'NET PRICE = 0' in NEST------------------");
 		
 	  /*  System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
 	    driver=new ChromeDriver();
@@ -62,8 +62,8 @@ public class BooksStatusActiveAndNetPriceZeroInNest
 	           
 	           if(mObj1.get("distributorname").equals("ELIB") && (mObj.get("netprice").equals(0.0) || mObj.get("netprice")==null))
 	           {
-	        	   System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+" || netprice -> "+mObj.get("netprice")+" || publishername -> "+mObj1.get("publishername")+" || distributorname -> "+mObj1.get("distributorname")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || updateddate -> "+mObj.get("updateddate"));
-	               System.out.println();
+	        	   log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+" || netprice -> "+mObj.get("netprice")+" || publishername -> "+mObj1.get("publishername")+" || distributorname -> "+mObj1.get("distributorname")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || updateddate -> "+mObj.get("updateddate"));
+	               log.info("");
 	           }
 	    }
 	  }

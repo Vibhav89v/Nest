@@ -16,10 +16,11 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 import Mongo.ProductCollection.Product;
+import common.AutomationConstants;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class CheckPublisherContract
+public class CheckPublisherContract implements AutomationConstants
 {
 	 MongoDBMorphia mongoutil = new MongoDBMorphia();
 	 Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
@@ -36,8 +37,8 @@ public class CheckPublisherContract
 	  @Test(enabled=true, priority=1, groups={"All"})
 	  public void checkPublisherContractNest() throws InterruptedException, SQLException
 	   {
-		System.out.println("--------Checking Publisher's Contract In NEST------------------");
-	    System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
+		log.info("--------Checking Publisher's Contract In NEST------------------");
+	    System.setProperty(CHROME_KEY,DRIVER_PATH+CHROME_FILE);
 	   
 	    driver=new ChromeDriver();
 	  
@@ -66,13 +67,13 @@ public class CheckPublisherContract
 	           
 	           if(((String) mObj1.get("iscontractavailable")).equalsIgnoreCase("true"))
 	           {
-	               System.out.println("'PUBLISHER STATUS' IN PRODUCT COLLECTION : "+mObj1.get("iscontractavailable"));
-	               System.out.println();
+	               log.info("'PUBLISHER STATUS' IN PRODUCT COLLECTION : "+mObj1.get("iscontractavailable"));
+	               log.info("");
 	           }
 	           else
 	           {
-	        	   System.out.println("'PUBLISHER STATUS' is 'FALSE' ");
-	        	   System.out.println();
+	        	   log.info("'PUBLISHER STATUS' is 'FALSE' ");
+	        	   log.info("");
 	           }
 	          }
 	           

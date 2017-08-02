@@ -16,10 +16,11 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 import Mongo.ProductCollection.Product;
+import common.AutomationConstants;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class BooksMissedOrUpcomingInNestElib 
+public class BooksMissedOrUpcomingInNestElib implements AutomationConstants
 {
 	 MongoDBMorphia mongoutil = new MongoDBMorphia();
 	 Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
@@ -37,8 +38,8 @@ public class BooksMissedOrUpcomingInNestElib
 	  public void missingOrUpcomingPIDsInfoNest() throws InterruptedException, SQLException
 	   {
 		 
-		System.out.println("----------Missing PID'S IN PRODUCT collection----------------");
-	    System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
+		log.info("----------Missing PID'S IN PRODUCT collection----------------");
+	    System.setProperty(CHROME_KEY,DRIVER_PATH+CHROME_FILE);
 	   
 	    driver=new ChromeDriver();
 	  
@@ -65,9 +66,9 @@ public class BooksMissedOrUpcomingInNestElib
 	           product.setProvider_productid( (Integer) mObj.get("provider_productid"));
 	           
 	           if(((String) mObj.get("productstatus")).equalsIgnoreCase("PARKED") || ((String) mObj.get("productstatus")).equalsIgnoreCase("UPCOMING"))
-	        	   System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
+	        	   log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
 	           /*else
-	        	   System.out.println("'PRODUCT STATUS' other than 'Upcoming' and 'Parked' ");*/
+	        	   log.info("'PRODUCT STATUS' other than 'Upcoming' and 'Parked' ");*/
 	          }
 	           
 	    }

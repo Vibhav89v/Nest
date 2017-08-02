@@ -1,5 +1,5 @@
 
-package vo;
+package valueObject;
 
 
 public class Datum {

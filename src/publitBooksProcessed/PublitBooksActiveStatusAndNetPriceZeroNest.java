@@ -22,8 +22,8 @@ import PublitToProductTransformation.Isbn;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 import restClientForPublit.AbstractRestClient;
-import vo.Datum;
-import vo.PublitVO;
+import valueObject.Datum;
+import valueObject.PublitVO;
 
 public class PublitBooksActiveStatusAndNetPriceZeroNest 
 {
@@ -62,8 +62,8 @@ public class PublitBooksActiveStatusAndNetPriceZeroNest
 		for(int i=0;i<isbnList.size();i++)
 		{
 			String result=isbnList.get(i);
-			System.out.println("ISBN "+(i+1)+" = " +isbnList.get(i));
-			System.out.println();*/
+			log.info("ISBN "+(i+1)+" = " +isbnList.get(i));
+			log.info();*/
 			
 			 DBCollection query = ds1.getDB().getCollection("product");           
 	         DBCursor	prodCursor = query.find(new BasicDBObject("productstatus", "ACTIVE"));
@@ -76,8 +76,8 @@ public class PublitBooksActiveStatusAndNetPriceZeroNest
 	           
 	           if(mObj1.get("distributorname").equals("PUBLIT") && (mObj.get("netprice").equals(0.0) || mObj.get("netprice")==null))
 	           {
-	        	   System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+" || netprice -> "+mObj.get("netprice")+" || publishername -> "+mObj1.get("publishername")+" || distributorname -> "+mObj1.get("distributorname")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || updateddate -> "+mObj.get("updateddate"));
-	               System.out.println();
+	        	   log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+" || netprice -> "+mObj.get("netprice")+" || publishername -> "+mObj1.get("publishername")+" || distributorname -> "+mObj1.get("distributorname")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || updateddate -> "+mObj.get("updateddate"));
+	               log.info("");
 	           }
 	          }
 		}

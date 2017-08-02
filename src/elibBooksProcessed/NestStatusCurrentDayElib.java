@@ -23,8 +23,8 @@ import generics.AddDate;
 import generics.MongoDBMorphia;
 import mongoclient.AppMongoClientImpl;
 import restClientForPublit.AbstractRestClient;
-import vo.Datum;
-import vo.PublitVO;
+import valueObject.Datum;
+import valueObject.PublitVO;
 
 public class NestStatusCurrentDayElib 
 {
@@ -59,19 +59,19 @@ public class NestStatusCurrentDayElib
 	  long count10 = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","UPCOMING").append("publisher.distributorname","ELIB" ));
 	  long count11 = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","HIGH_PRICE").append("publisher.distributorname","ELIB" ));
 	
-    		 System.out.println("=========FINAL STATUS==========");
-    		 System.out.println("Total COUNT for 'ELIB' : "+count);
-    		 System.out.println("publisher.distributorname : 'ELIB'|| productstatus :'ACTIVE'    || count : " + count1);
-    		 System.out.println("publisher.distributorname : 'ELIB'|| productstatus :'DELETED'   || count : " + count2);
-    		 System.out.println("publisher.distributorname : 'ELIB'|| productstatus :'A_INACTIVE'|| count : " + count3);
-    		 System.out.println("publisher.distributorname : 'ELIB'|| productstatus :'P_INACTIVE'|| count : " + count4);
-    		 System.out.println("publisher.distributorname : 'ELIB'|| productstatus :'A_OMITTED' || count : " + count5);
-    		 System.out.println("publisher.distributorname : 'ELIB'|| productstatus :'PARKED'    || count : " + count6);
-    		 System.out.println("publisher.distributorname : 'ELIB'|| productstatus :'L_INACTIVE'|| count : " + count7);
-    		 System.out.println("publisher.distributorname : 'ELIB'|| productstatus :'ERROR'     || count : " + count8);
-    		 System.out.println("publisher.distributorname : 'ELIB'|| productstatus :'P_DEFERRED'|| count : " + count9);
-    		 System.out.println("publisher.distributorname : 'ELIB'|| productstatus :'UPCOMING'  || count : " + count10);
-    		 System.out.println("publisher.distributorname : 'ELIB'|| productstatus :'HIGH_PRICE'|| count : " + count11);
+    		 log.info("=========FINAL STATUS==========");
+    		 log.info("Total COUNT for 'ELIB' : "+count);
+    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'ACTIVE'    || count : " + count1);
+    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'DELETED'   || count : " + count2);
+    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'A_INACTIVE'|| count : " + count3);
+    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'P_INACTIVE'|| count : " + count4);
+    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'A_OMITTED' || count : " + count5);
+    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'PARKED'    || count : " + count6);
+    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'L_INACTIVE'|| count : " + count7);
+    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'ERROR'     || count : " + count8);
+    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'P_DEFERRED'|| count : " + count9);
+    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'UPCOMING'  || count : " + count10);
+    		 log.info("publisher.distributorname : 'ELIB'|| productstatus :'HIGH_PRICE'|| count : " + count11);
 	 }
 	
   }

@@ -5,28 +5,22 @@ import java.util.List;
 
 import com.sun.jersey.api.client.ClientResponse;
 
+import common.AutomationConstants;
 import generics.AddDate;
+import generics.Property;
 import restClientForPublit.AbstractRestClient;
-import vo.Datum;
-import vo.PublitVO;
+import valueObject.Datum;
+import valueObject.PublitVO;
 
-public class Isbn
+public class Isbn implements AutomationConstants
 {
 	
-		static String userid = "nextory_api_user";
-		static String password = "tos559ntio8ge9ep";
-		static String date = AddDate.addingDays(-1);
-		static String URL = "https://api.publit.com/trade/v2.0/products?only=isbn,updated_at&updated_at=" + date
+	static String userid = Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "USERID");
+	static String password = Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "PASSWORD");
+	static String date = AddDate.addingDays(-1);
+	static String URL = "https://api.publit.com/trade/v2.0/products?only=isbn,updated_at&updated_at=" + date
 				+ "&updated_at_args=greater_equal;combinator";
-		static String URL1 = "https://api.publit.com/trade/v2.0/products?with=publisher,files&updated_at=&updated_at_args=greater_equal;combinator";
-
-		// ----------------------------------Complete Publit information----------------------------------------
-
-		// --------------------------------Only ISBN''s----------------------------------------------------------
-		// List<String> isbnList = getIsbnList(vo);
-		// System.out.println("Total ISBN being fetched = "+isbnList.size());
-		// System.out.println("ISBN being fetched = "+isbnList);
-	
+	static String URL1 = "https://api.publit.com/trade/v2.0/products?with=publisher,files&updated_at=&updated_at_args=greater_equal;combinator";
 
 	/**
 	 * Returns List of isbn from VO Object.

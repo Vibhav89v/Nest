@@ -18,17 +18,19 @@ import com.sun.jersey.api.client.ClientResponse;
 
 import Mongo.ProductCollection.Product;
 import Mongo.PublitDistributor.Publit;
+import common.AutomationConstants;
 import generics.AddDate;
 import generics.MongoDBMorphia;
+import generics.Property;
 import restClientForPublit.AbstractRestClient;
-import vo.Datum;
-import vo.PublitVO;
+import valueObject.Datum;
+import valueObject.PublitVO;
 
-public class BooksMissedInNestPublit 
+public class BooksMissedInNestPublit implements AutomationConstants
 {
 
-	static String userid = "nextory_api_user";
-	static String password = "tos559ntio8ge9ep";
+	static String userid = Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "USERID");
+	static String password = Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "PASSWORD");
 	static String date = AddDate.addingDays(-21);
 	static String URL = "https://api.publit.com/trade/v2.0/products?only=isbn,updated_at&updated_at=" + date+ "&updated_at_args=greater_equal;combinator";
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
@@ -59,7 +61,7 @@ public class BooksMissedInNestPublit
 	    abstractRestClient.setHTTPBasicAuthFilter(userid, password);
 	    clientReponse = abstractRestClient.get(URL, null, null);
 		PublitVO vo = abstractRestClient.getEntity(clientReponse, PublitVO.class);
-		//=============================System.out.println("Complete Information : "+vo);===================================
+		//=============================log.info("Complete Information : "+vo);===================================
 		
 		List<Datum> data = vo.getData();
 		List<String> isbnList = new ArrayList<>();
@@ -68,13 +70,13 @@ public class BooksMissedInNestPublit
 			isbnList.add(datum.getIsbn());
 		}
 		//==============================================ISBN List========================================================
-		System.out.println("ISBN being fetched for " + date+ ": " + isbnList);
-		System.out.println("ISBN List Size : "+isbnList.size());
+		log.info("ISBN being fetched for " + date+ ": " + isbnList);
+		log.info("ISBN List Size : "+isbnList.size());
 		//--------------------Fetching the Isbn from ISBN List--------------------------------------------------------- 
 		for(int i=0;i<isbnList.size();i++)
 		{
 			String result=isbnList.get(i);
-			//System.out.println("ISBN "+(i+1)+" = " +isbnList.get(i));
+			//log.info("ISBN "+(i+1)+" = " +isbnList.get(i));
 			
 			 DBCollection query = ds1.getDB().getCollection("product");           
 	         DBCursor	cursor = query.find(new BasicDBObject("isbn", result));
@@ -88,19 +90,19 @@ public class BooksMissedInNestPublit
 	 	           
 	 	           if(((String) mObj.get("productstatus")).equalsIgnoreCase("PARKED") || ((String) mObj.get("productstatus")).equalsIgnoreCase("UPCOMING"))
 	 	           {
-	 	        	   /*System.out.println("'ISBN' missed : "+mObj.get("isbn"));
-	 	        	   System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION : "+mObj.get("productstatus"));*/
-	 	        	  System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
-	 	        	   System.out.println();
+	 	        	   /*log.info("'ISBN' missed : "+mObj.get("isbn"));
+	 	        	   log.info("'PRODUCT STATUS' IN PRODUCT COLLECTION : "+mObj.get("productstatus"));*/
+	 	        	  log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
+	 	        	   log.info("");
 	 	        	   count++;
 	 	           }
 	 	          /* else
 	 	           {
-	 	        	   System.out.println("'PRODUCT STATUS' other than 'Upcoming' and 'Parked' ");
-	 	        	   System.out.println();
+	 	        	   log.info("'PRODUCT STATUS' other than 'Upcoming' and 'Parked' ");
+	 	        	   log.info();
 	 	           }*/
 	             }
 	      }
-	        System.out.println("Total number of Books 'MISSED' in NEST : "+count);
+	        log.info("Total number of Books 'MISSED' in NEST : "+count);
 	}
 }

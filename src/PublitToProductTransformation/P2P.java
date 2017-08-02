@@ -24,16 +24,18 @@ import com.sun.jersey.api.client.ClientResponse;
 import Mongo.ElibDistributor.Elib;
 import Mongo.ProductCollection.Product;
 import Mongo.PublitDistributor.Publit;
+import common.AutomationConstants;
 import generics.AddDate;
 import generics.MongoDBMorphia;
+import generics.Property;
 import restClientForPublit.AbstractRestClient;
-import vo.Datum;
-import vo.PublitVO;
+import valueObject.Datum;
+import valueObject.PublitVO;
 
-public class P2P 
+public class P2P implements AutomationConstants
 {
-	static String userid = "nextory_api_user";
-	static String password = "tos559ntio8ge9ep";
+	static String userid = Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "USERID");
+	static String password = Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "PASSWORD");
 	static String date = AddDate.addingDays(-1);
 	static String URL = "https://api.publit.com/trade/v2.0/products?only=isbn,updated_at&updated_at=" + date+ "&updated_at_args=greater_equal;combinator";
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
@@ -67,7 +69,7 @@ public class P2P
 	    abstractRestClient.setHTTPBasicAuthFilter(userid, password);
 	    clientReponse = abstractRestClient.get(URL, null, null);
 		PublitVO vo = abstractRestClient.getEntity(clientReponse, PublitVO.class);
-		//=============================System.out.println("Complete Information : "+vo);===================================
+		//=============================log.info("Complete Information : "+vo);===================================
 		
 		List<Datum> data = vo.getData();
 		List<String> isbnList = new ArrayList<>();
@@ -76,18 +78,18 @@ public class P2P
 			isbnList.add(datum.getIsbn());
 		}
 		//==============================================ISBN List========================================================
-		System.out.println("ISBN being fetched for " + date+ ": " + isbnList);
-		System.out.println("ISBN List Size : "+isbnList.size());
+		log.info("ISBN being fetched for " + date+ ": " + isbnList);
+		log.info("ISBN List Size : "+isbnList.size());
 		//--------------------Fetching the Isbn from ISBN List--------------------------------------------------------- 
 		for(int i=0;i<isbnList.size();i++)
 		{
 			String result=isbnList.get(i);
-			System.out.println(isbnList.get(i));
+			log.info(isbnList.get(i));
 			DateTime gte = null;
             try
             {
             	 gte = new DateTime(AddDate.currentStringToDate(AddDate.currentDate()));
-            	 //System.out.println(gte);
+            	 //log.info(gte);
             }
             catch(Exception e)
             {
@@ -95,7 +97,7 @@ public class P2P
             }
             gte				= gte.withTimeAtStartOfDay();
             gte				= gte.minusDays(1);
-            //System.out.println(gte);
+            //log.info(gte);
             Date	start = new Date(gte.withTimeAtStartOfDay().getMillis());
             gte	= gte.plusDays(1);
             Date	end  = new Date(gte.withTimeAtStartOfDay().getMillis());
@@ -111,11 +113,11 @@ public class P2P
             	publit.setIsbn( (String) mObj.get("isbn"));
             	
             	DBObject mObj1 = (DBObject) mObj.get("manifestation");
-            	System.out.println("'STATUS' IN PUBLIT COLLECTION :"+mObj1.get("status"));
-            	System.out.println("'LAST UPDATED ON' IN PUBLIT COLLECTION : "+mObj.get("lastupdatedon_nest"));
+            	log.info("'STATUS' IN PUBLIT COLLECTION :"+mObj1.get("status"));
+            	log.info("'LAST UPDATED ON' IN PUBLIT COLLECTION : "+mObj.get("lastupdatedon_nest"));
             	
          publitDate = dateFormat.format((Date) mObj.get("lastupdatedon_nest"));
-         System.out.println("PUBLIT DATE = "+publitDate);
+         log.info("PUBLIT DATE = "+publitDate);
             	
             	DBCollection query1 = ds1.getDB().getCollection("product");
                 DBCursor cursor1 = query1.find(new BasicDBObject("isbn", result));
@@ -124,19 +126,19 @@ public class P2P
                 {
                   DBObject mObj2 = cursor1.next();
                   product.setIsbn((String) mObj1.get("isbn"));
-                  System.out.println("'UPDATED_DATE' IN PRODUCT COLLECTION :"+mObj1.get("updateddate"));
+                  log.info("'UPDATED_DATE' IN PRODUCT COLLECTION :"+mObj1.get("updateddate"));
             
                   if(mObj1.get("updateddate") != null)
                   {
                 	  productDate = dateFormat.format((Date)mObj1.get("updateddate"));
-                	  System.out.println("PRODUCT DATE = "+productDate);
+                	  log.info("PRODUCT DATE = "+productDate);
                   }
                   else
                   {
-                	  System.out.println("Updated date is null");
+                	  log.info("Updated date is null");
                   }
                    DBObject mObj3 = (DBObject) mObj1.get("publisher");
-                   System.out.println("'IS_CONTRACT_AVAILABLE' IN PRODUCT COLLECTION :"+mObj2.get("iscontractavailable"));
+                   log.info("'IS_CONTRACT_AVAILABLE' IN PRODUCT COLLECTION :"+mObj2.get("iscontractavailable"));
                    
                    if(mObj2.get("iscontractavailable") != null)
                    {
@@ -144,13 +146,13 @@ public class P2P
                 	   BasicDBObject[] dbArr1 = dbList1.toArray(new BasicDBObject[0]);
                 	   for(BasicDBObject dbObj1 : dbArr1) 
                 	   {
-                		   //System.out.println(dbObj1);
-                		   System.out.println("'STATUS' IN PRODUCT COLLECTION : "+ dbObj1.get("name") );
+                		   //log.info(dbObj1);
+                		   log.info("'STATUS' IN PRODUCT COLLECTION : "+ dbObj1.get("name") );
                 	   }
                    }
                    else
                    {
-                	   System.out.println("No CONTRACT exist with this distributor");
+                	   log.info("No CONTRACT exist with this distributor");
                    }
                 }
             }
@@ -158,18 +160,18 @@ public class P2P
             {
             	if(publitDate.equals(productDate))
             	{
-            		System.out.println("'lastupdatedon' of 'Publit' and 'updateddate' of 'Product' collection MATCHED");
+            		log.info("'lastupdatedon' of 'Publit' and 'updateddate' of 'Product' collection MATCHED");
             	}
             	else
             	{
-          	  		System.out.println("'lastupdatedon' of 'Publit' and 'updateddate' of 'Product' collection DIDN'T MATCHED");
+          	  		log.info("'lastupdatedon' of 'Publit' and 'updateddate' of 'Product' collection DIDN'T MATCHED");
             	}
             }
             else
             {
-            	System.out.println("Publit Date or the Product date are Null");
+            	log.info("Publit Date or the Product date are Null");
             }
-            System.out.println();
+            log.info("");
 		}
     }
  }

@@ -25,8 +25,8 @@ import Mongo.PublitDistributor.Publit;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 import restClientForPublit.AbstractRestClient;
-import vo.Datum;
-import vo.PublitVO;
+import valueObject.Datum;
+import valueObject.PublitVO;
 
 public class ExtrasPublit 
 {

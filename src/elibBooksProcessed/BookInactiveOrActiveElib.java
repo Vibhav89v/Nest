@@ -52,7 +52,7 @@ public class BookInactiveOrActiveElib
 	 @Test(enabled=true, priority=1, groups={"All"})
 	 public void bookStatusCheck() throws InterruptedException, SQLException
 	 {
-		System.out.println("--------------Book Status Check--------------------");
+		log.info("--------------Book Status Check--------------------");
 
 		DBCollection prodQuery = ds1.getDB().getCollection("product");
 		DBCursor prodCursor = prodQuery.find(new BasicDBObject("productstatus", "ACTIVE"));
@@ -69,14 +69,14 @@ public class BookInactiveOrActiveElib
 			if (!mObj.get("statusatpublisher").equals("ACTIVE"))
              {
              /*   
-              System.out.println("'provider_productid' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("provider_productid"));
-              System.out.println("'publishername' IN ELIB_WEBSHOP_META COLLECTION : "+ mObj2.get("publishername") );
-              System.out.println("'distributorname' IN ELIB_WEBSHOP_META COLLECTION : "+ mObj2.get("distributorname") );
-              System.out.println("'iscontractavailable' IN ELIB_WEBSHOP_META COLLECTION : "+ mObj2.get("iscontractavailable") );
-              System.out.println("'productstatus' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("productstatus"));
-              System.out.println("'statusatpublisher' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("statusatpublisher"));
-              System.out.println("'isbn' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("isbn"));
-              System.out.println("'_id' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("_id"));
+              log.info("'provider_productid' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("provider_productid"));
+              log.info("'publishername' IN ELIB_WEBSHOP_META COLLECTION : "+ mObj2.get("publishername") );
+              log.info("'distributorname' IN ELIB_WEBSHOP_META COLLECTION : "+ mObj2.get("distributorname") );
+              log.info("'iscontractavailable' IN ELIB_WEBSHOP_META COLLECTION : "+ mObj2.get("iscontractavailable") );
+              log.info("'productstatus' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("productstatus"));
+              log.info("'statusatpublisher' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("statusatpublisher"));
+              log.info("'isbn' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("isbn"));
+              log.info("'_id' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("_id"));
               */
               int prodId=(int) mObj.get("provider_productid");
               DBCollection elibQuery = ds.getDB().getCollection("elib_webshop_meta");  
@@ -93,13 +93,13 @@ public class BookInactiveOrActiveElib
                {
                 if(dbObj.get("Name").equals("Active"))
                 {
-                	System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+"|| ELIB STATUS -> PRESENT");
+                	log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+"|| ELIB STATUS -> PRESENT");
                 }
                 else if(!dbObj.get("Name").equals("Active"))
                 {
-                	System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+"|| ELIB STATUS -> NOT-PRESENT");
+                	log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+"|| ELIB STATUS -> NOT-PRESENT");
                 }
-                System.out.println();
+                log.info("");
                }
               }
              }

@@ -55,9 +55,9 @@ public class AllProducts
 	 @Test(enabled=true, priority=1, groups={"All"})
 	 public void elibToProductTransformation() throws InterruptedException, SQLException
 	 {
-	  System.out.println("--------------In Elib to Product Transformation flow Meta--------------------");
+	  log.info("--------------In Elib to Product Transformation flow Meta--------------------");
 	  
-	  System.out.println("Fetching all the Product Id's from the url");
+	  log.info("Fetching all the Product Id's from the url");
 	  
 	  System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
 	  
@@ -80,20 +80,18 @@ public class AllProducts
 			  DBObject mObj = prodCursor.next();
 			  DBObject mObj2 = (DBObject) mObj.get("publisher");
 
-			  System.out.println("'provider_productid' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("provider_productid"));
-			  System.out.println("'publishername' IN ELIB_WEBSHOP_META COLLECTION : "+ mObj2.get("publishername") );
-			  System.out.println("'distributorname' IN ELIB_WEBSHOP_META COLLECTION : "+ mObj2.get("distributorname") );
-			  System.out.println("'iscontractavailable' IN ELIB_WEBSHOP_META COLLECTION : "+ mObj2.get("iscontractavailable") );
-			  System.out.println("'productstatus' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("productstatus"));
-			  System.out.println("'statusatpublisher' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("statusatpublisher"));
-			  System.out.println("'isbn' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("isbn"));
-			  System.out.println("'_id' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("_id"));
-			  System.out.println();
+			  log.info("'provider_productid' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("provider_productid"));
+			  log.info("'publishername' IN ELIB_WEBSHOP_META COLLECTION : "+ mObj2.get("publishername") );
+			  log.info("'distributorname' IN ELIB_WEBSHOP_META COLLECTION : "+ mObj2.get("distributorname") );
+			  log.info("'iscontractavailable' IN ELIB_WEBSHOP_META COLLECTION : "+ mObj2.get("iscontractavailable") );
+			  log.info("'productstatus' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("productstatus"));
+			  log.info("'statusatpublisher' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("statusatpublisher"));
+			  log.info("'isbn' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("isbn"));
+			  log.info("'_id' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("_id"));
+			  log.info("");
 
 	  }
-	  
-	 
-	  }
+	 }
 
 	 }
 }

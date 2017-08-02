@@ -12,6 +12,6 @@ public interface AutomationConstants
 	public static final String CHROME_KEY="webdriver.chrome.driver";
 	public static final String GECKO_KEY="webdriver.gecko.driver";
 	public static final String PHANTOM_KEY="phantomjs.binary.path";
-	public static final String INPUT_PATH="./data/inputs.xlsx";
+	public static final String INPUT_PATH="./data/StatusCheck.xlsx";
 	public static final String APIURL="";
 }

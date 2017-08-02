@@ -16,10 +16,11 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 import Mongo.ProductCollection.Product;
+import common.AutomationConstants;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class DetailsOfActivePIDsInNest 
+public class DetailsOfActivePIDsInNest implements AutomationConstants
 {
 	 MongoDBMorphia mongoutil = new MongoDBMorphia();
 	 Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
@@ -36,8 +37,8 @@ public class DetailsOfActivePIDsInNest
 	  @Test(enabled=true, priority=1, groups={"All"})
 	  public void detailOfActiveStatusNest() throws InterruptedException, SQLException
 	   {
-		System.out.println("--------Details of Active PID's NEST------------------");
-	    System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
+		log.info("--------Details of Active PID's NEST------------------");
+		System.setProperty(CHROME_KEY, DRIVER_PATH+CHROME_FILE);
 	   
 	    driver=new ChromeDriver();
 	  
@@ -64,13 +65,13 @@ public class DetailsOfActivePIDsInNest
 	           
 	           if(((String) mObj.get("productstatus")).equalsIgnoreCase("ACTIVE"))
 	           {
-	               System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION : "+mObj.get("productstatus"));
-	               System.out.println();
+	               log.info("'PRODUCT STATUS' IN PRODUCT COLLECTION : "+mObj.get("productstatus"));
+	               log.info("");
 	           }
 	           else
 	           {
-	        	   System.out.println("'PRODUCT STATUS' other than 'Active' ");
-	        	   System.out.println();
+	        	   log.info("'PRODUCT STATUS' other than 'Active' ");
+	        	   log.info("");
 	           }
 	          }
 	           

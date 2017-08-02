@@ -24,8 +24,8 @@ import Mongo.PublitDistributor.Publit;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 import restClientForPublit.AbstractRestClient;
-import vo.Datum;
-import vo.PublitVO;
+import valueObject.Datum;
+import valueObject.PublitVO;
 
 public class StatusAndFormatCheckPublit 
 {
@@ -48,7 +48,7 @@ public class StatusAndFormatCheckPublit
 	 {
 	  log.info("--------------In Publit checking 'STATUS' and 'FORMAT'--------------------");
 	  
-		//=============================System.out.println("Complete Information : "+vo);===================================
+		//=============================log.info("Complete Information : "+vo);===================================
 		
 			 DBCollection query = ds1.getDB().getCollection("product");           
 	         DBCursor	prodCursor = query.find(new BasicDBObject("productstatus","ACTIVE"));
@@ -68,22 +68,22 @@ public class StatusAndFormatCheckPublit
 	        		  BasicDBObject[] dbArr = dbList.toArray(new BasicDBObject[0]);
 	        		  if(dbArr.length==0)
 	        		  {
-	        			  System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || distributorname -> "+mObj1.get("distributorname")+" || productstatus -> "+mObj.get("productstatus")+" || formats -> "+mObj.get("formats"));
+	        			  log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || distributorname -> "+mObj1.get("distributorname")+" || productstatus -> "+mObj.get("productstatus")+" || formats -> "+mObj.get("formats"));
 	        			  System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
 	        			  driver=new ChromeDriver();
 	        			  driver.get("http://130.211.74.42:8083/nestver2/monitor/elib/api/product/present/"+prodId);
-	        			  System.out.println();
+	        			  log.info("");
 	        			  driver.close();
 	        		  }
 	        	  }
 	           
 	        	  if((mObj.get("formats")==null  )  )
 	        	  {
-	        		  System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || distributorname -> "+mObj1.get("distributorname")+" || productstatus -> "+mObj.get("productstatus")+" || formats -> "+mObj.get("formats"));
+	        		  log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || distributorname -> "+mObj1.get("distributorname")+" || productstatus -> "+mObj.get("productstatus")+" || formats -> "+mObj.get("formats"));
 	        		  System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
 	        		  driver=new ChromeDriver();
 	        		  driver.get("http://130.211.74.42:8083/nestver2/monitor/elib/api/product/present/"+prodId);
-	        		  System.out.println();
+	        		  log.info("");
 	        		  driver.close();
 	        	  }
 	        	}

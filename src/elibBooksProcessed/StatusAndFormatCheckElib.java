@@ -20,10 +20,11 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 import Mongo.ProductCollection.Product;
+import common.AutomationConstants;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class StatusAndFormatCheckElib 
+public class StatusAndFormatCheckElib implements AutomationConstants
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
@@ -43,7 +44,7 @@ public class StatusAndFormatCheckElib
 	 @Test(enabled=true, priority=1, groups={"All"})
 	 public void statusFormatCheckElib() throws InterruptedException, SQLException
 	 {
-	  System.out.println("--------------Checking book's 'Status' and 'Format'--------------------");
+	  log.info("--------------Checking book's 'Status' and 'Format'--------------------");
 	  
 	          DBCollection prodQuery = ds1.getDB().getCollection("product");            
 	          DBCursor prodCursor = prodQuery.find(new BasicDBObject("productstatus","ACTIVE"));
@@ -63,22 +64,22 @@ public class StatusAndFormatCheckElib
 	        		  BasicDBObject[] dbArr = dbList.toArray(new BasicDBObject[0]);
 	        		  if(dbArr.length==0)
 	        		  {
-	        			  System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || distributorname -> "+mObj1.get("distributorname")+" || productstatus -> "+mObj.get("productstatus")+" || formats -> "+mObj.get("formats"));
-	        			  System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
+	        			  log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || distributorname -> "+mObj1.get("distributorname")+" || productstatus -> "+mObj.get("productstatus")+" || formats -> "+mObj.get("formats"));
+	        			  System.setProperty(CHROME_KEY, DRIVER_PATH+CHROME_FILE);
 	        			  driver=new ChromeDriver();
 	        			  driver.get("http://130.211.74.42:8083/nestver2/monitor/elib/api/product/present/"+prodId);
-	        			  System.out.println();
+	        			  log.info("");
 	        			  driver.close();
 	        		  }
 	        	  }
 	           
 	        	  if((mObj.get("formats")==null  )  )
 	        	  {
-	        		  System.out.println("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || distributorname -> "+mObj1.get("distributorname")+" || productstatus -> "+mObj.get("productstatus")+" || formats -> "+mObj.get("formats"));
-	        		  System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
+	        		  log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || distributorname -> "+mObj1.get("distributorname")+" || productstatus -> "+mObj.get("productstatus")+" || formats -> "+mObj.get("formats"));
+	        		  System.setProperty(CHROME_KEY, DRIVER_PATH+CHROME_FILE);
 	        		  driver=new ChromeDriver();
 	        		  driver.get("http://130.211.74.42:8083/nestver2/monitor/elib/api/product/present/"+prodId);
-	        		  System.out.println();
+	        		  log.info("");
 	        		  driver.close();
 	        	  }
 	        	}

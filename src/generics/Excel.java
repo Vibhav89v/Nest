@@ -16,13 +16,17 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class Excel 
 {
-//	public static void main(String[] args) throws EncryptedDocumentException, InvalidFormatException, IOException
-//	{
-//		
-//		//int rowNum = shiftingRowsDown("./data/inputs.xlsx", "trial", 1);
-//		setExcelData("./data/StatusCheck.xlsx", "trial", "dfghdfg");
-//		setExcelData("./data/StatusCheck.xlsx", "trial",  "dfg");
-//	}
+	public static void main(String[] args) throws EncryptedDocumentException, InvalidFormatException, IOException
+	{
+		int value=getRowCount("./data/StatusCheck.xlsx","trial");
+		System.out.println(value);
+		String cellValue = getCellValue("./data/StatusCheck.xlsx","trial",20,1);
+		System.out.println(cellValue);
+		setExcelDataNest("./data/StatusCheck.xlsx","trial","2017-07-25", 23 ,45,  0,  0, 9, 8, 6,  4,  4,  3, 5);
+		setExcelDataNest("./data/StatusCheck.xlsx","trial","2017-07-20", 23 ,45, 10, 10,19, 18,62, 65, 14, 32, 35);
+		String sheetName = shiftingRowsUp("./data/StatusCheck.xlsx", "trial" , 21);
+		System.out.println(sheetName);
+	}
 	
 	
 	
@@ -85,13 +89,9 @@ public class Excel
 	public static void setExcelDataNest(String path,String sheetName,String date, long countActive, long countDeleted, long countA_INACTIVE,long countP_INACTIVE,long countA_OMITTED, long countPARKED, long countL_INACTIVE,long countERROR,
 			long countP_DEFERRED, long countUPCOMING, long countHIGH_PRICE) 
 	{
-		
-        
-        date= AddDate.currentDate();
-        
-        
-         
-        try {
+       date= AddDate.currentDate();
+        try
+        {
         	String v="";
             FileInputStream inputStream = new FileInputStream(new File(path));
             Workbook workbook = WorkbookFactory.create(inputStream);
@@ -109,10 +109,9 @@ public class Excel
             
            
 			v =WorkbookFactory.create(new FileInputStream(path)).getSheet(sheetName).getRow(rowCount).getCell(1).toString();
-			
-			
- 
-            for (Object[] aBook : bookData) {
+
+			for (Object[] aBook : bookData) 
+			{
             	Row row;
             	
             	if(date.equals(v))
@@ -168,29 +167,28 @@ public class Excel
 	
 	public static String shiftingRowsUp(String path,String sheet,int r) 
 	{
-	
 		try
 		{	
 			FileInputStream fis=new FileInputStream(path);
 			Workbook wb= WorkbookFactory.create(fis);
 			Sheet sh=wb.getSheet(sheet);
 			int lastRowNum = sh.getLastRowNum();
-		    if (r >= 0 && r < lastRowNum) {
+		    if (r >= 0 && r < lastRowNum) 
+		    {
 		        sh.shiftRows(r + 1, lastRowNum, -1);
 		    }
-		    if (r == lastRowNum) {
+		    if (r == lastRowNum) 
+		    {
 		        Row removingRow = sh.getRow(r);
-		        if (removingRow != null) {
+		        if (removingRow != null)
+		        {
 		            sh.removeRow(removingRow);
 		        }
 		    }
-			
-		
 		    FileOutputStream fos = new FileOutputStream(path);
 		    wb.write(fos);
 		    fos.flush();
 		    fos.close();
-	      
 		}
 		catch(Exception e)
 		{
@@ -216,8 +214,6 @@ public class Excel
 		    wb.write(fos);
 		    fos.flush();
 		    fos.close();
-		    
-	      
 		}
 		catch(Exception e)
 		{
@@ -227,19 +223,17 @@ public class Excel
 	
 	}
 	
-	public static double comparingCells(String path, String sheetName, int cellNum)
+	public static double comparingCells(String path, String sheetName, int colNum)
 	{
 		double diff=0;
 		try
 		
 		{
-			
 			Sheet sheet=WorkbookFactory.create(new FileInputStream(path)).getSheet(sheetName);
 			int row= sheet.getLastRowNum();
 			
-			
-			String topRow=(String) sheet.getRow(row-1).getCell(cellNum).toString();
-			String lowRow =(String) sheet.getRow(row).getCell(cellNum).toString();
+			String topRow=(String) sheet.getRow(row-1).getCell(colNum).toString();
+			String lowRow =(String) sheet.getRow(row).getCell(colNum).toString();
 			
 			double top= Double.parseDouble(topRow);
 			double low= Double.parseDouble(lowRow);

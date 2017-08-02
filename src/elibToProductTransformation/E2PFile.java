@@ -26,11 +26,12 @@ import com.mongodb.DBObject;
 import Mongo.ElibDistributor.Elib;
 import Mongo.ProductCollection.Product;
 import Mongo.ProductCollection.Publisher;
+import common.AutomationConstants;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
 
-public class E2PFile
+public class E2PFile implements AutomationConstants
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds = mongoutil.getMorphiaDatastoreForNestVer2();
@@ -55,11 +56,11 @@ public class E2PFile
 	 @Test(enabled=true, priority=1, groups={"All"})
 	 public void elibToProductTransformation() throws InterruptedException, SQLException
 	 {
-	  System.out.println("--------------In Elib to Product Transformation flow File Download--------------------");
+	  log.info("--------------In Elib to Product Transformation flow File Download--------------------");
 	  
-	  System.out.println("Fetching all the Product Id's from the url");
+	  log.info("Fetching all the Product Id's from the url");
 	  
-	  System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
+	  System.setProperty(CHROME_KEY, DRIVER_PATH+CHROME_FILE);
 	  
 	  driver=new ChromeDriver();
 		//----------------------------------ELIB---------------------------------------------------------------
@@ -80,12 +81,12 @@ public class E2PFile
         {
         	ProductID = t.nextToken();
         	int result = Integer.parseInt(ProductID);
-            System.out.println("'ProductID' IN ELIB_WEBSHOP_META COLLECTION: "+result);
+            log.info("'ProductID' IN ELIB_WEBSHOP_META COLLECTION: "+result);
             DateTime gte = null;
             try
             {
             	 gte = new DateTime(AddDate.currentStringToDate(AddDate.currentDate()));
-            	 //System.out.println(gte);
+            	 //log.info(gte);
             }
             catch(Exception e)
             {
@@ -95,7 +96,7 @@ public class E2PFile
             
             gte				= gte.withTimeAtStartOfDay();
             gte				= gte.minusDays(1);
-            //System.out.println(gte);
+            //log.info(gte);
             Date	start = new Date(gte.withTimeAtStartOfDay().getMillis());
             gte	= gte.plusDays(1);
             Date	end  = new Date(gte.withTimeAtStartOfDay().getMillis());
@@ -114,20 +115,20 @@ public class E2PFile
             while( cursor.hasNext() )
             {
              DBObject mObj = cursor.next();
-            // System.out.println(mObj.toString());
+            // log.info(mObj.toString());
              elib.setProductId( (Integer) mObj.get("ProductID") );
-             //System.out.println(ProductID);
+             //log.info(ProductID);
              
              BasicDBList dbList = (BasicDBList) mObj.get("Statuses");
              BasicDBObject[] dbArr = dbList.toArray(new BasicDBObject[0]);
              for(BasicDBObject dbObj : dbArr) 
              {
-              //System.out.println(dbObj);
-              System.out.println("'STATUS' IN ELIB_WEBSHOP_META COLLECTION : "+ dbObj.get("Name") );
-              System.out.println("'LAST_UPDATED_ON' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("lastupdatedon"));
+              //log.info(dbObj);
+              log.info("'STATUS' IN ELIB_WEBSHOP_META COLLECTION : "+ dbObj.get("Name") );
+              log.info("'LAST_UPDATED_ON' IN ELIB_WEBSHOP_META COLLECTION : "+mObj.get("lastupdatedon"));
          
-     elibDate = dateFormat.format((Date) mObj.get("lastupdatedon"));
-     System.out.println("ELIB DATE = "+elibDate);
+              elibDate = dateFormat.format((Date) mObj.get("lastupdatedon"));
+              log.info("ELIB DATE = "+elibDate);
               
               Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
               
@@ -138,46 +139,44 @@ public class E2PFile
               while( cursor1.hasNext() )
               {
                DBObject mObj1 = cursor1.next();
-              // System.out.println(mObj1.toString());
+              // log.info(mObj1.toString());
                product.setProvider_productid((Integer) mObj1.get("provider_productid"));//setProductId( (Integer) mObj1.get("provider_productid"));
-               System.out.println("'UPDATED_DATE' IN PRODUCT COLLECTION :"+mObj1.get("updateddate"));
+               log.info("'UPDATED_DATE' IN PRODUCT COLLECTION :"+mObj1.get("updateddate"));
                //====================================================
-               System.out.println("File Download Source : "+mObj1.get("filedownloadsource"));
-               System.out.println("File Download Date : "+mObj1.get("filedownloaddate"));
-               System.out.println("File RE-Download Soyrce : "+mObj1.get("fileredownloadsource"));
-               System.out.println("File RE-Download Date : "+mObj1.get("fileredownloaddate"));
+               log.info("File Download Source : "+mObj1.get("filedownloadsource"));
+               log.info("File Download Date : "+mObj1.get("filedownloaddate"));
+               log.info("File RE-Download Soyrce : "+mObj1.get("fileredownloadsource"));
+               log.info("File RE-Download Date : "+mObj1.get("fileredownloaddate"));
                //===================================================
-     productDate = dateFormat.format((Date)mObj1.get("updateddate"));
-     System.out.println("PRODUCT DATE = "+productDate);
+               productDate = dateFormat.format((Date)mObj1.get("updateddate"));
+               log.info("PRODUCT DATE = "+productDate);
                DBObject mObj2 = (DBObject) mObj1.get("publisher");
-               System.out.println("'IS_CONTRACT_AVAILABLE' IN PRODUCT COLLECTION :"+mObj2.get("iscontractavailable"));
+               log.info("'IS_CONTRACT_AVAILABLE' IN PRODUCT COLLECTION :"+mObj2.get("iscontractavailable"));
                
 //               BasicDBList dbList2 = (BasicDBList) mObj1.get("publisher");
 //               for(Object dbObj2 : dbList2)
 //               {
-//            	   System.out.println("STATUS IN PRODUCT COLLECTION : "+ dbObj2.get("name") );
+//            	   log.info("STATUS IN PRODUCT COLLECTION : "+ dbObj2.get("name") );
 //               }
                BasicDBList dbList1 = (BasicDBList) mObj1.get("productlist");
                BasicDBObject[] dbArr1 = dbList1.toArray(new BasicDBObject[0]);
                for(BasicDBObject dbObj1 : dbArr1) 
                {
-                //System.out.println(dbObj1);
-                System.out.println("'STATUS' IN PRODUCT COLLECTION : "+ dbObj1.get("name") );
+                //log.info(dbObj1);
+                log.info("'STATUS' IN PRODUCT COLLECTION : "+ dbObj1.get("name") );
                }
-           
-  	}
              }
-             
+          }
         }
             if(elibDate.equals(productDate))
             {
-          	  System.out.println("'lastupdatedon' of 'Elib' and 'updateddate' of 'Product' collection MATCHED");
+          	  log.info("'lastupdatedon' of 'Elib' and 'updateddate' of 'Product' collection MATCHED");
             }
             else
             {
-          	  System.out.println("'lastupdatedon' of 'Elib' and 'updateddate' of 'Product' collection DIDN'T MATCHED");
+          	  log.info("'lastupdatedon' of 'Elib' and 'updateddate' of 'Product' collection DIDN'T MATCHED");
             }
-            System.out.println();
+            log.info("");
    }
         driver.close();
   }

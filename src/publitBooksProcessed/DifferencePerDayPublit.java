@@ -15,30 +15,17 @@ import com.sun.jersey.api.client.ClientResponse;
 
 import Mongo.ProductCollection.Product;
 import Mongo.PublitDistributor.Publit;
+import common.AutomationConstants;
 import generics.AddDate;
 import generics.Excel;
 import generics.MongoDBMorphia;
 import mongoclient.AppMongoClientImpl;
 import restClientForPublit.AbstractRestClient;
-import vo.Datum;
-import vo.PublitVO;
+import valueObject.Datum;
+import valueObject.PublitVO;
 
-public class DifferencePerDayPublit 
+public class DifferencePerDayPublit implements AutomationConstants
 {
-
-	static String userid = "nextory_api_user";
-	static String password = "tos559ntio8ge9ep";
-	static String date1 = AddDate.addingDays(-21);
-	static String date2 = AddDate.addingDays(-22);
-	static String URL1 = "https://api.publit.com/trade/v2.0/products?only=isbn,updated_at&updated_at=" + date1+ "&updated_at_args=greater_equal;combinator";
-	static String URL2 = "https://api.publit.com/trade/v2.0/products?only=isbn,updated_at&updated_at=" + date2+ "&updated_at_args=greater_equal;combinator";
-	MongoDBMorphia mongoutil = new MongoDBMorphia();
-	Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
-	static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  //yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
-	
-	ClientResponse clientReponse1,clientReponse2;
-	AbstractRestClient abstractRestClient = new AbstractRestClient();
-	
 	 Publit publit=new Publit();
 	 Product product=new Product();
 	 public Logger log;
@@ -81,58 +68,55 @@ public class DifferencePerDayPublit
 		   countUPCOMING = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","UPCOMING").append("publisher.distributorname","PUBLIT" ));
 		   countHIGH_PRICE = AppMongoClientImpl.getCollectionByDB("nextory", "product").count(new Document("productstatus","HIGH_PRICE").append("publisher.distributorname","PUBLIT" ));
 		
-	    		 System.out.println("=========FINAL STATUS==========");
-	    		 System.out.println("Total COUNT for 'PUBLIT' : "+count);
-	    		 System.out.println("publisher.distributorname : 'PUBLIT'|| productstatus :'ACTIVE'    || count : " + countActive);
-	    		 System.out.println("publisher.distributorname : 'PUBLIT'|| productstatus :'DELETED'   || count : " + countDeleted);
-	    		 System.out.println("publisher.distributorname : 'PUBLIT'|| productstatus :'A_INACTIVE'|| count : " + countA_INACTIVE);
-	    		 System.out.println("publisher.distributorname : 'PUBLIT'|| productstatus :'P_INACTIVE'|| count : " + countP_INACTIVE);
-	    		 System.out.println("publisher.distributorname : 'PUBLIT'|| productstatus :'A_OMITTED' || count : " + countA_OMITTED);
-	    		 System.out.println("publisher.distributorname : 'PUBLIT'|| productstatus :'PARKED'    || count : " + countPARKED);
-	    		 System.out.println("publisher.distributorname : 'PUBLIT'|| productstatus :'L_INACTIVE'|| count : " + countL_INACTIVE);
-	    		 System.out.println("publisher.distributorname : 'PUBLIT'|| productstatus :'ERROR'     || count : " + countERROR);
-	    		 System.out.println("publisher.distributorname : 'PUBLIT'|| productstatus :'P_DEFERRED'|| count : " + countP_DEFERRED);
-	    		 System.out.println("publisher.distributorname : 'PUBLIT'|| productstatus :'UPCOMING'  || count : " + countUPCOMING);
-	    		 System.out.println("publisher.distributorname : 'PUBLIT'|| productstatus :'HIGH_PRICE'|| count : " + countHIGH_PRICE);
+	    		 log.info("=========FINAL STATUS==========");
+	    		 log.info("Total COUNT for 'PUBLIT' : "+count);
+	    		 log.info("publisher.distributorname : 'PUBLIT'|| productstatus :'ACTIVE'    || count : " + countActive);
+	    		 log.info("publisher.distributorname : 'PUBLIT'|| productstatus :'DELETED'   || count : " + countDeleted);
+	    		 log.info("publisher.distributorname : 'PUBLIT'|| productstatus :'A_INACTIVE'|| count : " + countA_INACTIVE);
+	    		 log.info("publisher.distributorname : 'PUBLIT'|| productstatus :'P_INACTIVE'|| count : " + countP_INACTIVE);
+	    		 log.info("publisher.distributorname : 'PUBLIT'|| productstatus :'A_OMITTED' || count : " + countA_OMITTED);
+	    		 log.info("publisher.distributorname : 'PUBLIT'|| productstatus :'PARKED'    || count : " + countPARKED);
+	    		 log.info("publisher.distributorname : 'PUBLIT'|| productstatus :'L_INACTIVE'|| count : " + countL_INACTIVE);
+	    		 log.info("publisher.distributorname : 'PUBLIT'|| productstatus :'ERROR'     || count : " + countERROR);
+	    		 log.info("publisher.distributorname : 'PUBLIT'|| productstatus :'P_DEFERRED'|| count : " + countP_DEFERRED);
+	    		 log.info("publisher.distributorname : 'PUBLIT'|| productstatus :'UPCOMING'  || count : " + countUPCOMING);
+	    		 log.info("publisher.distributorname : 'PUBLIT'|| productstatus :'HIGH_PRICE'|| count : " + countHIGH_PRICE);
 	    		 
-	    		Excel.setExcelDataNest("./data/StatusCheck.xlsx","PUBLIT", date, countActive, countDeleted, countA_INACTIVE, countP_INACTIVE, countA_OMITTED, countPARKED, countL_INACTIVE, countERROR, countP_DEFERRED, countUPCOMING, countHIGH_PRICE);
-	    		double activeDiff = Excel.comparingCells("./data/StatusCheck.xlsx","PUBLIT", 2);
-	    		System.out.println("THE DIFFERENCE BETWEEN THE ACTIVE COUNTS : "+activeDiff);
+	    		Excel.setExcelDataNest(INPUT_PATH,"PUBLIT", date, countActive, countDeleted, countA_INACTIVE, countP_INACTIVE, countA_OMITTED, countPARKED, countL_INACTIVE, countERROR, countP_DEFERRED, countUPCOMING, countHIGH_PRICE);
+	    		double activeDiff = Excel.comparingCells(INPUT_PATH,"PUBLIT", 2);
+	    		log.info("THE DIFFERENCE BETWEEN THE ACTIVE COUNTS : "+activeDiff);
 	    		
-	    		double a_InactiveDiff = Excel.comparingCells("./data/StatusCheck.xlsx","PUBLIT", 3);
-	    		System.out.println("THE DIFFERENCE BETWEEN THE A_INACTIVE COUNTS : "+a_InactiveDiff);
+	    		double a_InactiveDiff = Excel.comparingCells(INPUT_PATH,"PUBLIT", 3);
+	    		log.info("THE DIFFERENCE BETWEEN THE A_INACTIVE COUNTS : "+a_InactiveDiff);
 	    		
-	    		double p_InactiveDiff = Excel.comparingCells("./data/StatusCheck.xlsx","PUBLIT", 4);
-	    		System.out.println("THE DIFFERENCE BETWEEN THE P_ACTIVE COUNTS : "+p_InactiveDiff);
+	    		double p_InactiveDiff = Excel.comparingCells(INPUT_PATH,"PUBLIT", 4);
+	    		log.info("THE DIFFERENCE BETWEEN THE P_ACTIVE COUNTS : "+p_InactiveDiff);
 	    		
-	    		double deletedDiff = Excel.comparingCells("./data/StatusCheck.xlsx","PUBLIT", 5);
-	    		System.out.println("THE DIFFERENCE BETWEEN THE DELETED COUNTS : "+deletedDiff);
+	    		double deletedDiff = Excel.comparingCells(INPUT_PATH,"PUBLIT", 5);
+	    		log.info("THE DIFFERENCE BETWEEN THE DELETED COUNTS : "+deletedDiff);
 	    		
-	    		double parkedDiff = Excel.comparingCells("./data/StatusCheck.xlsx","PUBLIT", 6);
-	    		System.out.println("THE DIFFERENCE BETWEEN THE PARKED COUNTS : "+parkedDiff);
+	    		double parkedDiff = Excel.comparingCells(INPUT_PATH,"PUBLIT", 6);
+	    		log.info("THE DIFFERENCE BETWEEN THE PARKED COUNTS : "+parkedDiff);
 	    		
-	    		double upcomingDiff = Excel.comparingCells("./data/StatusCheck.xlsx","PUBLIT", 7);
-	    		System.out.println("THE DIFFERENCE BETWEEN THE UPCOMING COUNTS : "+upcomingDiff);
+	    		double upcomingDiff = Excel.comparingCells(INPUT_PATH,"PUBLIT", 7);
+	    		log.info("THE DIFFERENCE BETWEEN THE UPCOMING COUNTS : "+upcomingDiff);
 	    		
-	    		double a_OmittedDiff = Excel.comparingCells("./data/StatusCheck.xlsx","PUBLIT", 8);
-	    		System.out.println("THE DIFFERENCE BETWEEN THE A_OMITTED COUNTS : "+a_OmittedDiff);
+	    		double a_OmittedDiff = Excel.comparingCells(INPUT_PATH,"PUBLIT", 8);
+	    		log.info("THE DIFFERENCE BETWEEN THE A_OMITTED COUNTS : "+a_OmittedDiff);
 	    		
-	    		double deleteDiff = Excel.comparingCells("./data/StatusCheck.xlsx","PUBLIT", 9);
-	    		System.out.println("THE DIFFERENCE BETWEEN THE DELETED COUNTS : "+deleteDiff);
+	    		double deleteDiff = Excel.comparingCells(INPUT_PATH,"PUBLIT", 9);
+	    		log.info("THE DIFFERENCE BETWEEN THE DELETED COUNTS : "+deleteDiff);
 	    		
-	    		double l_InactiveDiff = Excel.comparingCells("./data/StatusCheck.xlsx","PUBLIT", 10);
-	    		System.out.println("THE DIFFERENCE BETWEEN THE L_INACTIVE COUNTS : "+l_InactiveDiff);
+	    		double l_InactiveDiff = Excel.comparingCells(INPUT_PATH,"PUBLIT", 10);
+	    		log.info("THE DIFFERENCE BETWEEN THE L_INACTIVE COUNTS : "+l_InactiveDiff);
 	    		
-	    		double errorDiff = Excel.comparingCells("./data/StatusCheck.xlsx","PUBLIT", 11);
-	    		System.out.println("THE DIFFERENCE BETWEEN THE ERROR COUNTS : "+errorDiff);
+	    		double errorDiff = Excel.comparingCells(INPUT_PATH,"PUBLIT", 11);
+	    		log.info("THE DIFFERENCE BETWEEN THE ERROR COUNTS : "+errorDiff);
 	    		
-	    		double p_DefferedDiff = Excel.comparingCells("./data/StatusCheck.xlsx","PUBLIT", 12);
-	    		System.out.println("THE DIFFERENCE BETWEEN THE P_DEFFERED COUNTS : "+p_DefferedDiff);
+	    		double p_DefferedDiff = Excel.comparingCells(INPUT_PATH,"PUBLIT", 12);
+	    		log.info("THE DIFFERENCE BETWEEN THE P_DEFFERED COUNTS : "+p_DefferedDiff);
 	    		
-	    		double highPriceDiff = Excel.comparingCells("./data/StatusCheck.xlsx","PUBLIT", 13);
-	    		System.out.println("THE DIFFERENCE BETWEEN THE HIGHPRICE COUNTS : "+highPriceDiff);
-	    		
-	    		
-	    		
+	    		double highPriceDiff = Excel.comparingCells(INPUT_PATH,"PUBLIT", 13);
+	    		log.info("THE DIFFERENCE BETWEEN THE HIGHPRICE COUNTS : "+highPriceDiff);
 		 }
 }

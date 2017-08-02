@@ -1,5 +1,5 @@
 
-package vo;
+package valueObject;
 
 import java.util.List;
 

@@ -15,10 +15,11 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 
 import Mongo.ProductCollection.Product;
+import common.AutomationConstants;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class MissingPIDNest 
+public class MissingPIDNest implements AutomationConstants
 {
  MongoDBMorphia mongoutil = new MongoDBMorphia();
  Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
@@ -37,8 +38,8 @@ public class MissingPIDNest
   @Test(enabled=true, priority=1, groups={"All"})
   public void missingPIDsNest() throws InterruptedException, SQLException
    {
-	System.out.println("------Missing PIDs Nest----------");
-    System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
+	log.info("------Missing PIDs Nest----------");
+	System.setProperty(CHROME_KEY, DRIVER_PATH+CHROME_FILE);
    
     driver=new ChromeDriver();
   
@@ -60,13 +61,13 @@ public class MissingPIDNest
             
           if(prodCursor.count()==0)   
           {
-           System.out.println("PID not processsed by the Nest :"+result);
+           log.info("PID not processsed by the Nest :"+result);
           }
            
           while( prodCursor.hasNext() )
           {
            prodCursor.next();
-           //System.out.println("PID processsed by the Nest :" +result);
+           //log.info("PID processsed by the Nest :" +result);
           }
            
     }

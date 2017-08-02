@@ -18,17 +18,19 @@ import com.sun.jersey.api.client.ClientResponse;
 
 import Mongo.ProductCollection.Product;
 import Mongo.PublitDistributor.Publit;
+import common.AutomationConstants;
 import generics.AddDate;
 import generics.MongoDBMorphia;
+import generics.Property;
 import restClientForPublit.AbstractRestClient;
-import vo.Datum;
-import vo.PublitVO;
+import valueObject.Datum;
+import valueObject.PublitVO;
 
-public class NestStatusCurrentDay 
+public class NestStatusCurrentDay implements AutomationConstants
 {
-	static String userid = "nextory_api_user";
-	static String password = "tos559ntio8ge9ep";
-	static String date = AddDate.addingDays(-17);
+	static String userid = Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "USERID");
+	static String password = Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "PASSWORD");
+	static String date = AddDate.addingDays(-1);
 	static String URL = "https://api.publit.com/trade/v2.0/products?only=isbn,updated_at&updated_at=" + date+ "&updated_at_args=greater_equal;combinator";
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
@@ -67,7 +69,7 @@ public class NestStatusCurrentDay
 	    abstractRestClient.setHTTPBasicAuthFilter(userid, password);
 	    clientReponse = abstractRestClient.get(URL, null, null);
 		PublitVO vo = abstractRestClient.getEntity(clientReponse, PublitVO.class);
-		//=============================System.out.println("Complete Information : "+vo);===================================
+		//=============================log.info("Complete Information : "+vo);===================================
 		
 		List<Datum> data = vo.getData();
 		List<String> isbnList = new ArrayList<>();
@@ -76,13 +78,13 @@ public class NestStatusCurrentDay
 			isbnList.add(datum.getIsbn());
 		}
 		//==============================================ISBN List========================================================
-		System.out.println("ISBN being fetched for " + date+ ": " + isbnList);
-		System.out.println("ISBN List Size : "+isbnList.size());
+		log.info("ISBN being fetched for " + date+ ": " + isbnList);
+		log.info("ISBN List Size : "+isbnList.size());
 		//--------------------Fetching the Isbn from ISBN List--------------------------------------------------------- 
 		for(int i=0;i<isbnList.size();i++)
 		{
 			String result=isbnList.get(i);
-			System.out.println("ISBN "+(i+1)+" = "+isbnList.get(i));
+			log.info("ISBN "+(i+1)+" = "+isbnList.get(i));
 			
 			 DBCollection query = ds1.getDB().getCollection("product");           
 	         DBCursor	prodCursor = query.find(new BasicDBObject("isbn", result));
@@ -98,82 +100,82 @@ public class NestStatusCurrentDay
 	        	 }
 	        	 catch(Exception e)
 	        	 {
-	        	   System.out.println(" ");
+	        	   log.info(" ");
 	        	 }
 	        	 DBObject mObj1 = (DBObject) mObj.get("publisher");
 	           
 	             if(((String) mObj.get("productstatus")).equalsIgnoreCase("Active") && mObj1.get("distributorname") !=null)
 	             {
-	        	   System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
-	        	   System.out.println("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
-	        	   System.out.println("Count with status 'ACTIVE' : "+ ++countActive);
-	        	   System.out.println();
+	        	   log.info("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
+	        	   log.info("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
+	        	   log.info("Count with status 'ACTIVE' : "+ ++countActive);
+	        	   log.info("");
 	             }
 	             else if(((String) mObj.get("productstatus")).equalsIgnoreCase("Parked") && mObj1.get("distributorname") !=null)
 	             {
-	            	 System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
-		        	 System.out.println("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
-		        	 System.out.println("Count with status 'PARKED' : "+ ++countParked);
-		        	 System.out.println();
+	            	 log.info("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
+		        	 log.info("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
+		        	 log.info("Count with status 'PARKED' : "+ ++countParked);
+		        	 log.info("");
 	             } 
 	             else if(((String) mObj.get("productstatus")).equalsIgnoreCase("Upcoming") && mObj1.get("distributorname") !=null)
 	             {
-	            	 System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
-		        	 System.out.println("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
-		        	 System.out.println("Count with status 'UPCOMING' : "+ ++countUpcoming);
-		        	 System.out.println();
+	            	 log.info("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
+		        	 log.info("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
+		        	 log.info("Count with status 'UPCOMING' : "+ ++countUpcoming);
+		        	 log.info("");
 	             }
 	             else if(((String) mObj.get("productstatus")).equalsIgnoreCase("A_Inactive") && mObj1.get("distributorname") !=null)
 	             {
-	            	 System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
-		        	 System.out.println("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
-		        	 System.out.println("Count with status 'A_Inactive' : "+ ++countA_Inactive);
-		        	 System.out.println();
+	            	 log.info("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
+		        	 log.info("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
+		        	 log.info("Count with status 'A_Inactive' : "+ ++countA_Inactive);
+		        	 log.info("");
 	             }
 	             else if(((String) mObj.get("productstatus")).equalsIgnoreCase("A_Omitted") && mObj1.get("distributorname") !=null)
 	             {
-	            	 System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
-		        	 System.out.println("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
-		        	 System.out.println("Count with status 'A_Omitted' : "+ ++countA_Omitted);
-		        	 System.out.println();
+	            	 log.info("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
+		        	 log.info("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
+		        	 log.info("Count with status 'A_Omitted' : "+ ++countA_Omitted);
+		        	 log.info("");
 	             }
 	             else if(((String) mObj.get("productstatus")).equalsIgnoreCase("L_Inactive") && mObj1.get("distributorname") !=null)
 	             {
-	            	 System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
-		        	 System.out.println("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
-		        	 System.out.println("Count with status 'L_Inactive' : "+ ++countL_Inactive);
-		        	 System.out.println();
+	            	 log.info("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
+		        	 log.info("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
+		        	 log.info("Count with status 'L_Inactive' : "+ ++countL_Inactive);
+		        	 log.info("");
 	             }
 	             else if(((String) mObj.get("productstatus")).equalsIgnoreCase("P_Inactive") && mObj1.get("distributorname") !=null)
 	             {
-	            	 System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
-		        	 System.out.println("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
-		        	 System.out.println("Count with status 'P_Inactive' : "+ ++countP_Inactive);
-		        	 System.out.println();
+	            	 log.info("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
+		        	 log.info("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
+		        	 log.info("Count with status 'P_Inactive' : "+ ++countP_Inactive);
+		        	 log.info("");
 	             }
 	             else if(((String) mObj.get("productstatus")).equalsIgnoreCase("P_Deferred") && mObj1.get("distributorname") !=null)
 	             {
-	            	 System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
-		        	 System.out.println("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
-		        	 System.out.println("Count with status 'P_Deferred' : "+ ++countP_Deferred);
-		        	 System.out.println();
+	            	 log.info("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
+		        	 log.info("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
+		        	 log.info("Count with status 'P_Deferred' : "+ ++countP_Deferred);
+		        	 log.info("");
 	             }
 	             else if(((String) mObj.get("productstatus")).equalsIgnoreCase("HighPrice") && mObj1.get("distributorname") !=null)
 	             {
-	            	 System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
-		        	 System.out.println("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
-		        	 System.out.println("Count with status 'HighPrice' : "+ ++countHighPrice);
-		        	 System.out.println();
+	            	 log.info("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
+		        	 log.info("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
+		        	 log.info("Count with status 'HighPrice' : "+ ++countHighPrice);
+		        	 log.info("");
 	             }
 	             else if(((String) mObj.get("productstatus")).equalsIgnoreCase("Error") && mObj1.get("distributorname") !=null)
 	             {
-	            	 System.out.println("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
-		        	 System.out.println("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
-		        	 System.out.println("Count with status 'Error' : "+ ++countError);
-		        	 System.out.println();
+	            	 log.info("'PRODUCT STATUS' IN PRODUCT COLLECTION IS ==> "+mObj.get("productstatus"));
+		        	 log.info("'DISTRIBUTORNAME' under 'Publisher' in PRODUCT COLLECTION ==> "+mObj1.get("distributorname"));
+		        	 log.info("Count with status 'Error' : "+ ++countError);
+		        	 log.info("");
 	             }
 	             else
-	            	 System.out.println("Invalid Status");
+	            	 log.info("Invalid Status");
 	         }   
 		  }
 	 }
