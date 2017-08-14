@@ -18,10 +18,11 @@ import com.mongodb.DBObject;
 
 import Mongo.ElibDistributor.Elib;
 import common.AutomationConstants;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class CountPIDElib implements AutomationConstants
+public class CountPIDElib extends SuperTestScript implements AutomationConstants
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds = mongoutil.getMorphiaDatastoreForNestVer2();
@@ -37,7 +38,7 @@ public class CountPIDElib implements AutomationConstants
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	 }
 	 
-	 @Test(enabled=true, priority=1, groups={"All"})
+	 @Test
 	 public void countFetchedPIDsElib() throws InterruptedException, SQLException
 	 {
 	  log.info("--------------From Elib Counting ProductID being Fetched--------------------");
@@ -59,7 +60,7 @@ public class CountPIDElib implements AutomationConstants
         while(t.hasMoreTokens())
         {
         	ProductID = t.nextToken();
-        	log.info("");
+        	
         	int result = Integer.parseInt(ProductID);
         	
         	DBCollection elibQuery = ds.getDB().getCollection("elib_webshop_meta");  
@@ -89,8 +90,8 @@ public class CountPIDElib implements AutomationConstants
             }
             
         }
-        log.info("");
+        
         log.info("========Total number of 'ProductID's' being fetched===>> : "+count);
-        driver.close();
+       // driver.close();
   }
 }

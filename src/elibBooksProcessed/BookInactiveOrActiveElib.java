@@ -27,10 +27,11 @@ import com.mongodb.DBObject;
 import Mongo.ElibDistributor.Elib;
 import Mongo.ProductCollection.Product;
 import Mongo.ProductCollection.Publisher;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class BookInactiveOrActiveElib 
+public class BookInactiveOrActiveElib extends SuperTestScript
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds = mongoutil.getMorphiaDatastoreForNestVer2();
@@ -49,7 +50,7 @@ public class BookInactiveOrActiveElib
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	 }
 	 
-	 @Test(enabled=true, priority=1, groups={"All"})
+	 @Test
 	 public void bookStatusCheck() throws InterruptedException, SQLException
 	 {
 		log.info("--------------Book Status Check--------------------");
@@ -93,11 +94,11 @@ public class BookInactiveOrActiveElib
                {
                 if(dbObj.get("Name").equals("Active"))
                 {
-                	log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+"|| ELIB STATUS -> PRESENT");
+                	log.info("_id -> "+mObj.get("_id")+" || provider_productid -> "+mObj.get("provider_productid")+" || isbn -> "+mObj.get("isbn")+" || publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+" || ELIB STATUS -> PRESENT");
                 }
                 else if(!dbObj.get("Name").equals("Active"))
                 {
-                	log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+"|| ELIB STATUS -> NOT-PRESENT");
+                	log.info("_id -> "+mObj.get("_id")+" || provider_productid -> "+mObj.get("provider_productid")+" || isbn -> "+mObj.get("isbn")+" || publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+" || ELIB STATUS -> NOT-PRESENT");
                 }
                 log.info("");
                }

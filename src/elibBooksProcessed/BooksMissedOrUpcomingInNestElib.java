@@ -1,6 +1,8 @@
 package elibBooksProcessed;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -17,10 +19,11 @@ import com.mongodb.DBObject;
 
 import Mongo.ProductCollection.Product;
 import common.AutomationConstants;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class BooksMissedOrUpcomingInNestElib implements AutomationConstants
+public class BooksMissedOrUpcomingInNestElib extends SuperTestScript 
 {
 	 MongoDBMorphia mongoutil = new MongoDBMorphia();
 	 Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
@@ -34,12 +37,17 @@ public class BooksMissedOrUpcomingInNestElib implements AutomationConstants
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	  }
 	  
-	  @Test(enabled=true, priority=1, groups={"All"})
+	  @Test
 	  public void missingOrUpcomingPIDsInfoNest() throws InterruptedException, SQLException
 	   {
+		  	List<Integer> parkedList = new ArrayList<Integer>();
+			int a;
+		    	
+			List<Integer> upcomingList = new ArrayList<Integer>();
+			int b;
 		 
-		log.info("----------Missing PID'S IN PRODUCT collection----------------");
-	    System.setProperty(CHROME_KEY,DRIVER_PATH+CHROME_FILE);
+		
+	    System.setProperty(AutomationConstants.CHROME_KEY, AutomationConstants.DRIVER_PATH+AutomationConstants.CHROME_FILE);
 	   
 	    driver=new ChromeDriver();
 	  
@@ -65,13 +73,28 @@ public class BooksMissedOrUpcomingInNestElib implements AutomationConstants
 	           DBObject mObj1 = (DBObject) mObj.get("publisher");
 	           product.setProvider_productid( (Integer) mObj.get("provider_productid"));
 	           
-	           if(((String) mObj.get("productstatus")).equalsIgnoreCase("PARKED") || ((String) mObj.get("productstatus")).equalsIgnoreCase("UPCOMING"))
-	        	   log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
-	           /*else
-	        	   log.info("'PRODUCT STATUS' other than 'Upcoming' and 'Parked' ");*/
+	           if(((String) mObj.get("productstatus")).equalsIgnoreCase("PARKED") ) 
+	           {
+	        	   log.info("_id -> "+mObj.get("_id")+" || provider_productid -> "+mObj.get("provider_productid")+" || isbn -> "+mObj.get("isbn")+" || publisher_publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
+	        	   a= (int) mObj.get("provider_productid");
+	        	   parkedList.add(a);
+	           }
+	        
+	           else if (((String) mObj.get("productstatus")).equalsIgnoreCase("UPCOMING"))
+	           {
+	        	   log.info("_id -> "+mObj.get("_id")+" || provider_productid -> "+mObj.get("provider_productid")+" || isbn -> "+mObj.get("isbn")+" || publisher_publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
+	        	   b= (int) mObj.get("provider_productid");
+	    			  upcomingList.add(b);
+	           }
 	          }
 	           
 	    }
+	    log.info("PID with product status as PARKED are " + parkedList.size()+ " and are mentioned below: ");
+	    log.info(parkedList);
+	    
+	    log.info("PID with product status as UPCOMING are " + upcomingList.size()+ " and are mentioned below: ");
+	    log.info(upcomingList);
+	    
 	    driver.close();
 	        
 	   }

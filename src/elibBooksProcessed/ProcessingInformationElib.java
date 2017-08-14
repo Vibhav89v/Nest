@@ -17,10 +17,11 @@ import com.mongodb.DBObject;
 
 import Mongo.ProductCollection.Product;
 import common.AutomationConstants;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class ProcessingInformationElib implements AutomationConstants
+public class ProcessingInformationElib extends SuperTestScript implements AutomationConstants
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	 Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
@@ -45,7 +46,7 @@ public class ProcessingInformationElib implements AutomationConstants
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	  }
 	  
-	  @Test(enabled=true, priority=1, groups={"All"})
+	  @Test
 	  public void detailOfActiveStatusAndNetPriceZeroInNest() throws InterruptedException, SQLException
 	   {
 		log.info("--------Details of Active PID's NEST------------------");

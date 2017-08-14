@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+
 import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.joda.time.DateTime;
@@ -27,11 +30,13 @@ import Mongo.ElibDistributor.Elib;
 import Mongo.ProductCollection.Product;
 import Mongo.ProductCollection.Publisher;
 import common.AutomationConstants;
+import common.EmailAttachmentSender;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
 
-public class CountPIDProduct implements AutomationConstants
+public class CountPIDProduct extends SuperTestScript implements AutomationConstants
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds = mongoutil.getMorphiaDatastoreForNestVer2();
@@ -49,9 +54,13 @@ public class CountPIDProduct implements AutomationConstants
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	 }
 	 
-	 @Test(enabled=true, priority=1, groups={"All"})
-	 public void gettingCountPIDsElib() throws InterruptedException, SQLException
+	 @Test
+	 public void gettingCountPIDsProduct() throws InterruptedException, SQLException, AddressException, MessagingException
 	 {
+		 List<Integer> presentList = new ArrayList<Integer>();
+		 List<Integer> absentList = new ArrayList<Integer>();
+		 
+		 
 	  log.info("--------------In 'PRODUCT' Collection Count the Provider Product ID's------------------");
 	  
 	  log.info("Fetching all the Product Id's from the url");
@@ -71,7 +80,7 @@ public class CountPIDProduct implements AutomationConstants
         while(t.hasMoreTokens())
         {
         	Provider_productid = t.nextToken();
-        	log.info("");
+        	
         	int result = Integer.parseInt(Provider_productid);
         	
         	DBCollection proQuery = ds1.getDB().getCollection("product");  
@@ -79,26 +88,42 @@ public class CountPIDProduct implements AutomationConstants
             log.info("'PROVIDER PRODUCT ID' IN PRODUCT COLLECTION: "+result);
         	count++;
             
+        	if(proCursor.count()==0)
+        	{
+        		absentList.add(result);
+        	}
+        	
             while( proCursor.hasNext() )
             {
-            	DBObject mObj = proCursor.next();
-    			DBObject mObj2 = (DBObject) mObj.get("publisher");
+            	DBObject mObj  = proCursor.next();
+            	
+    			DBObject mObj1 = (DBObject) mObj.get("publisher");
             	product.setProvider_productid( (Integer) mObj.get("provider_productid") );
             	//log.info();
             	//log.info("'PRODUCT STATUS' in PRODUCT Collection : "+mObj.get("productstatus"));
             	if(((String) mObj.get("productstatus")).equalsIgnoreCase("Active"))
             	{
-            		log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
+            		log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
             		log.info("");
+            		
+    				presentList.add(result);
             	}
             	else if(!((String) mObj.get("productstatus")).equalsIgnoreCase("Active"))
             	{
-            		log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj2.get("publishername")+" || iscontractavailable -> "+mObj2.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
+            		
             		log.info("");
+            		
+    				presentList.add(result);
             	}
             }
+            
+            
         }
-        log.info("Total number of Books Processed by NEST : "+count);
+        log.info("Count for the PID present in the product collection is: " +presentList.size()+ " and are: " +presentList);
+        log.info("Count for the PID absent in the product collection is: " +absentList.size()+ " and are: " +absentList);
+        log.info("Total number of PID in the URL are : "+count);
+       
+        
         driver.close();
      }
 }

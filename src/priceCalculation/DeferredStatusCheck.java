@@ -17,19 +17,20 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import Mongo.ProductCollection.Product;
 import Mongo.PublitDistributor.Publit;
+import common.SuperTestScript;
 
 
-public class DeferredStatusCheck
+public class DeferredStatusCheck extends SuperTestScript
 {
 	public static Logger log;
 	Publit publit=new Publit();
 	static Product product=new Product();
 	public static String query =" ";
 	public static String result;
-	String publishedDate;
+	public static String publishedDate;
 	String curdate=AddDate.currentDate();
 	static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	long age;
+	public static long age;
 	String prodStatus;
 	
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
@@ -45,8 +46,14 @@ public class DeferredStatusCheck
 	public void getDataFromPublisher()
 	{
 		 
-		List<Integer> list = new ArrayList<Integer>();
+		List<Integer> nullList = new ArrayList<Integer>();
 	    int x; 
+	    
+	    List<Integer> trueList = new ArrayList<Integer>();
+	    int y;
+	    
+	    List<Integer> falseList = new ArrayList<Integer>();
+	    int z;
 	
 		query = "select publisher_id from publisher_settings where isdeferred=1 and deferreddays=180";
 		
@@ -83,7 +90,7 @@ public class DeferredStatusCheck
 	            			else
 		            		{
 		            			 x= (int) mObj.get("provider_productid");
-		     	    			 list.add(x);
+		            			 nullList.add(x);
 		     	    			 log.info("FOR PID "+mObj.get("provider_productid")+" and publisher.publisherid : "+pubId+" ,AGE <= 180 and deferred.statusoverride=null: PRODUCT STATUS IS OTHER THAN P_DEFERRED i.e. : " +mObj.get("productstatus"));
 		            		}
 	            		}
@@ -105,8 +112,8 @@ public class DeferredStatusCheck
 	    	            		
 	    	            		else
 	    	            		{
-	    	            			 x= (int) mObj.get("provider_productid");
-	    	     	    			 list.add(x);
+	    	            			 y= (int) mObj.get("provider_productid");
+	    	            			 trueList.add(y);
 	    	     	    			 log.info("FOR PID "+mObj.get("provider_productid")+" and publisher.publisherid : "+pubId+" ,AGE <= 180 and deferred.statusoverride=true: PRODUCT STATUS IS OTHER THAN ACTIVE i.e. : " +mObj.get("productstatus"));
 	    	            		}
 	            			}
@@ -121,8 +128,8 @@ public class DeferredStatusCheck
 	    	            		
 	    	            		else
 	    	            		{
-	    	            			 x= (int) mObj.get("provider_productid");
-	    	     	    			 list.add(x);
+	    	            			 z= (int) mObj.get("provider_productid");
+	    	            			 falseList.add(z);
 	    	     	    			 log.info("FOR PID "+mObj.get("provider_productid")+" and publisher.publisherid : "+pubId+" ,AGE <= 180 and deferred.statusoverride=false: PRODUCT STATUS IS OTHER THAN P_DEFERRED i.e. : " +mObj.get("productstatus"));
 	    	            		}
 	            			}	
@@ -137,9 +144,12 @@ public class DeferredStatusCheck
 	        }
 		}
 		
-		for(int i=0;i<list.size();i++)
-		{
-			System.out.print(list.get(i)+", ");
-		}
+		log.info("FOR AGE <= 180 and deferred.statusoverride=null; 'provider_productid' for PRODUCT STATUS other than P_DEFERRED are "+nullList.size()+" and mentioned Below: ");
+		log.info(nullList);
+		log.info("FOR AGE <= 180 and deferred.statusoverride=true: 'provider_productid' for PRODUCT STATUS other than ACTIVE are "+trueList.size()+" and mentioned Below: ");
+		log.info(trueList);
+		log.info("FOR AGE <= 180 and deferred.statusoverride=false: 'provider_productid' for PRODUCT STATUS other than P_DEFERRED are "+falseList.size()+" and mentioned Below: ");
+ 		log.info(falseList);
+ 		
 	}
 }

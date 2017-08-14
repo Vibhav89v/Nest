@@ -19,13 +19,14 @@ import com.sun.jersey.api.client.ClientResponse;
 import Mongo.ProductCollection.Product;
 import Mongo.PublitDistributor.Publit;
 import PublitToProductTransformation.Isbn;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 import restClientForPublit.AbstractRestClient;
 import valueObject.Datum;
 import valueObject.PublitVO;
 
-public class PublitBooksActiveStatusAndNetPriceZeroNest 
+public class PublitBooksActiveStatusAndNetPriceZeroNest extends SuperTestScript
 {
 	/*static String userid = "nextory_api_user";
 	static String password = "tos559ntio8ge9ep";
@@ -45,7 +46,7 @@ public class PublitBooksActiveStatusAndNetPriceZeroNest
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	 }
 	 
-	 @Test(enabled=true, priority=3, groups={"All"})
+	 @Test
 	 public void gettingCountISBN() throws InterruptedException, SQLException
 	 {
 	  log.info("--------------Information of Publit ISBN's with STATUS='ACTIVE' and NET PRICE='0' in NEST-------");

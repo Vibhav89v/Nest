@@ -19,6 +19,7 @@ import com.sun.jersey.api.client.ClientResponse;
 
 import Mongo.ProductCollection.Product;
 import Mongo.PublitDistributor.Publit;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 import mongoclient.AppMongoClientImpl;
@@ -26,7 +27,7 @@ import restClientForPublit.AbstractRestClient;
 import valueObject.Datum;
 import valueObject.PublitVO;
 
-public class NestStatusCurrentDayElib 
+public class NestStatusCurrentDayElib extends SuperTestScript
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds1 = mongoutil.getMorphiaDatastoreForProduct();
@@ -41,7 +42,7 @@ public class NestStatusCurrentDayElib
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	 }
 	 
-	 @Test(enabled=true, priority=3, groups={"All"})
+	 @Test
 	 public void statusCurrentDayNest() throws InterruptedException, SQLException
 	 {
 	  log.info("--------------In PRODUCT Collection checking 'STATUS' of the Current day--------------------");

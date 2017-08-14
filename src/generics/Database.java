@@ -32,11 +32,11 @@ public class Database implements AutomationConstants
 		{
 		//Accessing driver from the JAR file 
 	    Class.forName(driver);
-	    System.out.println("MySql driver loaded ok.");
+	    //System.out.println("MySql driver loaded ok.");
 	    
 	    con=DriverManager.getConnection(dbUrl, username, password);
 
-	    log.info("DB connected successfully");
+	   // log.info("DB connected successfully");
 	    
 	    stmt = con.createStatement();
 

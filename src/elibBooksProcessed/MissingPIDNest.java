@@ -16,10 +16,11 @@ import com.mongodb.DBCursor;
 
 import Mongo.ProductCollection.Product;
 import common.AutomationConstants;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class MissingPIDNest implements AutomationConstants
+public class MissingPIDNest extends SuperTestScript implements AutomationConstants
 {
  MongoDBMorphia mongoutil = new MongoDBMorphia();
  Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
@@ -35,7 +36,7 @@ public class MissingPIDNest implements AutomationConstants
   Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
   }
   
-  @Test(enabled=true, priority=1, groups={"All"})
+  @Test
   public void missingPIDsNest() throws InterruptedException, SQLException
    {
 	log.info("------Missing PIDs Nest----------");

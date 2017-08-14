@@ -18,10 +18,11 @@ import com.mongodb.DBObject;
 import Mongo.ElibDistributor.Elib;
 import Mongo.ProductCollection.Product;
 import common.AutomationConstants;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class ElibMetaPresentNotProcessedNest implements AutomationConstants
+public class ElibMetaPresentNotProcessedNest extends SuperTestScript implements AutomationConstants
 {
 	 MongoDBMorphia mongoutil = new MongoDBMorphia();
 	 Datastore ds=mongoutil.getMorphiaDatastoreForNestVer2();
@@ -38,7 +39,7 @@ public class ElibMetaPresentNotProcessedNest implements AutomationConstants
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	  }
 	  
-	  @Test(enabled=true, priority=1, groups={"All"})
+	  @Test
 	  public void missingPIDsNest() throws InterruptedException, SQLException
 	   {
 		//log.info("------Missing PIDs Nest----------");
@@ -76,7 +77,6 @@ public class ElibMetaPresentNotProcessedNest implements AutomationConstants
 	    				// log.info(mObj.toString());
 	    				elib.setProductId( (Integer) mObj.get("ProductID") );
 	    				log.info("_id -> "+mObj.get("_id")+"|| ProductID -> "+mObj.get("ProductID")+"|| isbn -> "+mObj.get("isbn")+"|| Publisher -> "+ mObj.get("Publisher")+" || Title -> "+mObj.get("Title")+" || UpdatedDate -> "+mObj.get("UpdatedDate"));
-	             
 	           
 	    			}
 	           

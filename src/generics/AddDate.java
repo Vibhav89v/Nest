@@ -41,7 +41,7 @@ public class AddDate
 		c.add(Calendar.DATE, days);
 		Date addedDate=c.getTime();
 		String date=dateFormat.format(addedDate);
-		System.out.println("Date after adding the "+days+" days : " +date);
+		System.out.println("Date after "+days+" days : " +date);
    
 		return date;
 	}

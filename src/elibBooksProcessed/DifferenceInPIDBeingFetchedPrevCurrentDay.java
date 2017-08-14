@@ -21,10 +21,11 @@ import com.mongodb.DBObject;
 
 import Mongo.ProductCollection.Product;
 import common.AutomationConstants;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class DifferenceInPIDBeingFetchedPrevCurrentDay implements AutomationConstants
+public class DifferenceInPIDBeingFetchedPrevCurrentDay extends SuperTestScript implements AutomationConstants
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds = mongoutil.getMorphiaDatastoreForNestVer2();
@@ -44,7 +45,7 @@ public class DifferenceInPIDBeingFetchedPrevCurrentDay implements AutomationCons
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	 }
 	 
-	 @Test(enabled=true, priority=1, groups={"All"})
+	 @Test
 	 public void diffCalculationElib() throws InterruptedException, SQLException
 	 {
 	  log.info("--------------Difference in PID's being fetched-----------------");

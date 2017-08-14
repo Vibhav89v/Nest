@@ -1,6 +1,8 @@
 package elibBooksProcessed;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -17,10 +19,11 @@ import com.mongodb.DBObject;
 
 import Mongo.ProductCollection.Product;
 import common.AutomationConstants;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class DetailsOfActivePIDsInNest implements AutomationConstants
+public class DetailsOfActivePIDsInNest extends SuperTestScript implements AutomationConstants
 {
 	 MongoDBMorphia mongoutil = new MongoDBMorphia();
 	 Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
@@ -34,9 +37,16 @@ public class DetailsOfActivePIDsInNest implements AutomationConstants
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	  }
 	  
-	  @Test(enabled=true, priority=1, groups={"All"})
+	  @Test
 	  public void detailOfActiveStatusNest() throws InterruptedException, SQLException
 	   {
+		  	List<Integer> presentList = new ArrayList<Integer>();
+			
+			List<Integer> absentList = new ArrayList<Integer>();
+			 
+			List<Integer> activeList = new ArrayList<Integer>();
+			 
+			 
 		log.info("--------Details of Active PID's NEST------------------");
 		System.setProperty(CHROME_KEY, DRIVER_PATH+CHROME_FILE);
 	   
@@ -57,25 +67,37 @@ public class DetailsOfActivePIDsInNest implements AutomationConstants
 	         
 	          DBCollection prodQuery = ds1.getDB().getCollection("product");            
 	          DBCursor prodCursor = prodQuery.find(new BasicDBObject("provider_productid", result));
+	          
+	          if(prodCursor.count() == 0)
+	          {
+	        	  absentList.add(result);
+	          }
 	            
 	          while( prodCursor.hasNext() )
 	          {
-	           DBObject mObj = prodCursor.next();
-	           product.setProvider_productid( (Integer) mObj.get("provider_productid"));
+	            DBObject mObj = prodCursor.next();
+	            DBObject mObj1 = (DBObject) mObj.get("publisher");
+	            product.setProvider_productid( (Integer) mObj.get("provider_productid"));
 	           
-	           if(((String) mObj.get("productstatus")).equalsIgnoreCase("ACTIVE"))
+	            if(((String) mObj.get("productstatus")).equalsIgnoreCase("ACTIVE"))
 	           {
-	               log.info("'PRODUCT STATUS' IN PRODUCT COLLECTION : "+mObj.get("productstatus"));
+	        	   log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
 	               log.info("");
+	               activeList.add(result);
 	           }
-	           else
+	            else if(!((String) mObj.get("productstatus")).equalsIgnoreCase("Active"))
 	           {
-	        	   log.info("'PRODUCT STATUS' other than 'Active' ");
-	        	   log.info("");
+	            	log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+"|| publisher_publishername -> "+ mObj1.get("publishername")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher"));
+	            	presentList.add(result);
+	            	log.info("");
 	           }
 	          }
 	           
 	    }
+	    log.info("PID present in NEST with product status as ACTIVE are " +activeList.size()+ " and as follows: " +activeList);
+	    log.info("PID present in NEST with product status other than ACTIVE are " +presentList.size()+ " and as follows: " +presentList);
+	    log.info("PID absent in NEST are " +absentList.size()+ " and as follows: " +absentList);
+	    
 	    driver.close();
 	   }
 }

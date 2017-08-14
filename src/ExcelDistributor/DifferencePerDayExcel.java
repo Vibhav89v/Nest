@@ -4,10 +4,11 @@ import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.testng.annotations.Test;
 import Mongo.ProductCollection.Product;
+import common.SuperTestScript;
 import generics.Excel;
 import mongoclient.AppMongoClientImpl;
 
-public class DifferencePerDayExcel 
+public class DifferencePerDayExcel extends SuperTestScript
 {
 	 Product product=new Product();
 	 public Logger log;
@@ -32,7 +33,7 @@ public class DifferencePerDayExcel
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	 }
 	 
-	 @Test(enabled=true, priority=3, groups={"All"})
+	 @Test
 	 public void differncePerDayEXCEL() throws InterruptedException, SQLException
 	 {
 		  log.info("--------------In PRODUCT Collection checking 'STATUS' of the Current day--------------------");

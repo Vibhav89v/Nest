@@ -1,6 +1,8 @@
 package elibBooksProcessed;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -17,10 +19,11 @@ import com.mongodb.DBObject;
 
 import Mongo.ProductCollection.Product;
 import common.AutomationConstants;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class CheckPublisherContract implements AutomationConstants
+public class CheckPublisherContract extends SuperTestScript 
 {
 	 MongoDBMorphia mongoutil = new MongoDBMorphia();
 	 Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
@@ -34,11 +37,15 @@ public class CheckPublisherContract implements AutomationConstants
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	  }
 	  
-	  @Test(enabled=true, priority=1, groups={"All"})
+	  @Test
 	  public void checkPublisherContractNest() throws InterruptedException, SQLException
 	   {
+		  
+		  List<Integer> aList = new ArrayList<Integer>();
+			 int a;
+			 
 		log.info("--------Checking Publisher's Contract In NEST------------------");
-	    System.setProperty(CHROME_KEY,DRIVER_PATH+CHROME_FILE);
+	    System.setProperty(AutomationConstants.CHROME_KEY,AutomationConstants.DRIVER_PATH+AutomationConstants.CHROME_FILE);
 	   
 	    driver=new ChromeDriver();
 	  
@@ -68,16 +75,17 @@ public class CheckPublisherContract implements AutomationConstants
 	           if(((String) mObj1.get("iscontractavailable")).equalsIgnoreCase("true"))
 	           {
 	               log.info("'PUBLISHER STATUS' IN PRODUCT COLLECTION : "+mObj1.get("iscontractavailable"));
-	               log.info("");
 	           }
 	           else
 	           {
-	        	   log.info("'PUBLISHER STATUS' is 'FALSE' ");
-	        	   log.info("");
+	        	   log.info("'PUBLISHER STATUS' IN PRODUCT COLLECTION : "+mObj1.get("iscontractavailable"));
+	        	   a = (int) mObj.get("provider_productid");
+	        	   aList.add(a);
 	           }
 	          }
-	           
 	    }
+	    log.info("PID for IsContactAvailable other than TRUE are "+aList.size()+" and as follows:");
+	    log.info(aList);
 	    driver.close();
 	   }
 }

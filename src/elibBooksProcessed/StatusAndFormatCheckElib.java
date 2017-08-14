@@ -21,10 +21,11 @@ import com.mongodb.DBObject;
 
 import Mongo.ProductCollection.Product;
 import common.AutomationConstants;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class StatusAndFormatCheckElib implements AutomationConstants
+public class StatusAndFormatCheckElib extends SuperTestScript implements AutomationConstants
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
@@ -41,7 +42,7 @@ public class StatusAndFormatCheckElib implements AutomationConstants
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	 }
 	 
-	 @Test(enabled=true, priority=1, groups={"All"})
+	 @Test
 	 public void statusFormatCheckElib() throws InterruptedException, SQLException
 	 {
 	  log.info("--------------Checking book's 'Status' and 'Format'--------------------");

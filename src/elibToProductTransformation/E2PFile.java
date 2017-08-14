@@ -27,11 +27,12 @@ import Mongo.ElibDistributor.Elib;
 import Mongo.ProductCollection.Product;
 import Mongo.ProductCollection.Publisher;
 import common.AutomationConstants;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
 
-public class E2PFile implements AutomationConstants
+public class E2PFile extends SuperTestScript implements AutomationConstants
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds = mongoutil.getMorphiaDatastoreForNestVer2();
@@ -53,7 +54,7 @@ public class E2PFile implements AutomationConstants
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	 }
 	 
-	 @Test(enabled=true, priority=1, groups={"All"})
+	 @Test
 	 public void elibToProductTransformation() throws InterruptedException, SQLException
 	 {
 	  log.info("--------------In Elib to Product Transformation flow File Download--------------------");

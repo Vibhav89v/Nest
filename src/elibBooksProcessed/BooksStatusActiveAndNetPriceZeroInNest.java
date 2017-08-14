@@ -1,6 +1,8 @@
 package elibBooksProcessed;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -16,10 +18,11 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 import Mongo.ProductCollection.Product;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class BooksStatusActiveAndNetPriceZeroInNest
+public class BooksStatusActiveAndNetPriceZeroInNest extends SuperTestScript
 {
 	 MongoDBMorphia mongoutil = new MongoDBMorphia();
 	 Datastore ds1=mongoutil.getMorphiaDatastoreForProduct();
@@ -33,9 +36,17 @@ public class BooksStatusActiveAndNetPriceZeroInNest
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	  }
 	  
-	  @Test(enabled=true, priority=1, groups={"All"})
+	  @Test
 	  public void detailOfActiveStatusAndNetPriceZeroInNest() throws InterruptedException, SQLException
 	   {
+		  
+		  List<Integer> zeroList = new ArrayList<Integer>();
+			int a;
+		    	
+			List<Integer> nullList = new ArrayList<Integer>();
+			int b;
+		  
+		  
 		log.info("--------Details of 'Active' PID's and 'NET PRICE = 0' in NEST------------------");
 		
 	  /*  System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
@@ -50,7 +61,7 @@ public class BooksStatusActiveAndNetPriceZeroInNest
 	    {
 	    	  ProductID = t.nextToken();
 	          int result = Integer.parseInt(ProductID);
-	     }
+	    }
 	     */
 	          DBCollection prodQuery = ds1.getDB().getCollection("product");            
 	          DBCursor prodCursor = prodQuery.find(new BasicDBObject("productstatus","ACTIVE"));   //.append("netprice",0)
@@ -60,12 +71,31 @@ public class BooksStatusActiveAndNetPriceZeroInNest
 	           DBObject mObj = prodCursor.next();
 	           DBObject mObj1=(DBObject) mObj.get("publisher");
 	           
-	           if(mObj1.get("distributorname").equals("ELIB") && (mObj.get("netprice").equals(0.0) || mObj.get("netprice")==null))
+	           if(mObj1.get("distributorname").equals("ELIB") && (mObj.get("netprice")==null))
 	           {
 	        	   log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+" || netprice -> "+mObj.get("netprice")+" || publishername -> "+mObj1.get("publishername")+" || distributorname -> "+mObj1.get("distributorname")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || updateddate -> "+mObj.get("updateddate"));
-	               log.info("");
+	               
+	               b= (int) mObj.get("provider_productid");
+	        	   nullList.add(b);
 	           }
+	           
+	           else if((mObj1.get("distributorname").equals("ELIB")) && (mObj.get("netprice").equals(0.0)))
+	           {
+	        	   log.info("_id -> "+mObj.get("_id")+"|| provider_productid -> "+mObj.get("provider_productid")+"|| isbn -> "+mObj.get("isbn")+" || productstatus -> "+mObj.get("productstatus")+" || statusatpublisher -> "+mObj.get("statusatpublisher")+" || netprice -> "+mObj.get("netprice")+" || publishername -> "+mObj1.get("publishername")+" || distributorname -> "+mObj1.get("distributorname")+" || iscontractavailable -> "+mObj1.get("iscontractavailable")+" || updateddate -> "+mObj.get("updateddate"));
+	               
+	               a= (int) mObj.get("provider_productid");
+	        	   zeroList.add(a);
+	               
+	           }
+	           
+	           
 	    }
+	          
+	        log.info("PID with distributor name as ELIB and Netprice equals to NULL are " + nullList.size()+ " and are mentioned below: ");
+	  	    log.info(nullList);
+	  	    
+	  	    log.info("PID with distributor name as ELIB and Netprice equals to ZERO are " + zeroList.size()+ " and are mentioned below: ");
+	  	    log.info(zeroList);
 	  }
 }
 

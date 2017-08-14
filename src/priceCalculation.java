@@ -1,4 +1,3 @@
-package priceCalculation;
 
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -22,7 +21,7 @@ import Mongo.ProductCollection.Product;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 
-public class PriceCalculation 
+public class priceCalculation 
 {
 	MongoDBMorphia mongoutil = new MongoDBMorphia();
 	Datastore ds1 = mongoutil.getMorphiaDatastoreForProduct();
@@ -32,12 +31,11 @@ public class PriceCalculation
 	String publishedDate;
 	String curdate=AddDate.currentDate();
 	String currentdate;
-	
 	double netprice;
 	long age;
 	String subprice;
    
-	 public PriceCalculation()
+	 public priceCalculation()
 	 {
 	  log = Logger.getLogger(this.getClass());
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
@@ -66,67 +64,64 @@ public class PriceCalculation
  	           
  	    	  age = AddDate.calculateNumberOfDays(publishedDate, curdate);
  	    	  subprice = (String) mObj.get("subprice");
- 	    	 // log.info("Provider_productid : " +mObj.get("provider_productid")+ " || ProductStatus : "+mObj.get("productstatus")+ " || publisheddate : "+mObj.get("publisheddate")+" || netprice : "+mObj.get("netprice")+" || age : "+age+" || subprice : "+mObj.get("subprice"));
+ 	    	  log.info("Provider_productid : " +mObj.get("provider_productid")+ " || ProductStatus : "+mObj.get("productstatus")+ " || publisheddate : "+mObj.get("publisheddate")+" || netprice : "+mObj.get("netprice")+" || age : "+age+" || subprice : "+mObj.get("subprice"));
+ 	    	 
+ 	    	  
+ 	    	  
  	    	  
  	    	  if(age<=180)
  	    	  {
  	    		  if(subprice.equals("STANDARD"))
- 	    		  {
  	    		  //Assert.assertEquals(subprice, "STANDARD");
- 	    		  //log.info("For age <= 180,,Subprice is STANDARD"); 
- 	    		  }
+ 	    		  log.info("For age <= 180,,Subprice is STANDARD"); 
+ 	    		  
  	    		  else
  	    		  {
  	    			  x= (int) mObj.get("provider_productid");
  	    			 list.add(x);
- 	    			log.info("Provider_productid : " +mObj.get("provider_productid")+ " || ProductStatus : "+mObj.get("productstatus")+ " || publisheddate : "+mObj.get("publisheddate")+" || netprice : "+mObj.get("netprice")+" || age : "+age+" || subprice : "+mObj.get("subprice"));
- 	    			 log.info("For age <= 180,, Subprice is not STANDARD but :" +subprice);
- 	    			 System.out.println();
+ 	    			 log.info("For age <= 180,, Subprice is not STANDARD");
  	    		  }
  	    	  }
  	       
  	    	  else if( age > 180 && netprice <= 46.0 )
  	    	  {
  	    		 if(subprice.equals("BASE"))
- 	    		 {
  	    		 // Assert.assertEquals(subprice, "BASE");
- 	    		  //log.info("For age > 180 and NetPrice <= 46,,Subprice is BASE");
- 	    		 }
+ 	    		  log.info("For age > 180 and NetPrice <= 46,,Subprice is BASE");
+ 	    		 
  	    		 
  	    		 else
 	    		  {
 	    			  x= (int) mObj.get("provider_productid");
 	    			 list.add(x);
-	    			 log.info("Provider_productid : " +mObj.get("provider_productid")+ " || ProductStatus : "+mObj.get("productstatus")+ " || publisheddate : "+mObj.get("publisheddate")+" || netprice : "+mObj.get("netprice")+" || age : "+age+" || subprice : "+mObj.get("subprice"));
-	    			 log.info("For age > 180 and NetPrice <=46,, Subprice is not BASE but :" +subprice);
-	    			 System.out.println();
+	    			 log.info("For age > 180 and NetPrice <=46,, Subprice is not BASE");
 	    		  }
  	    	  }
  	      
  	    	  else if( age > 180 && netprice > 46.0 && netprice <= 128.0)
  	    	  {
  	    		 if(subprice.equals("STANDARD"))
- 	    		 {
  	    		 // Assert.assertEquals(subprice, "STANDARD");
- 	    		  //log.info("For age > 180 and NetPrice > 46 and netprice <=128.0 ,,Subprice is STANDARD"); 
- 	    		 }
- 	    		  else
+ 	    		  log.info("For age > 180 and NetPrice > 46 and netprice <=128.0 ,,Subprice is STANDARD"); 
+ 	    		 else
 	    		  {
- 	    			 log.info("Provider_productid : " +mObj.get("provider_productid")+ " || ProductStatus : "+mObj.get("productstatus")+ " || publisheddate : "+mObj.get("publisheddate")+" || netprice : "+mObj.get("netprice")+" || age : "+age+" || subprice : "+mObj.get("subprice"));
- 	    			log.info("For age > 180 and Netprice between 46 and 128,, Subprice is not STANDARD but :" +subprice);
+ 	    			log.info("For age > 180 and Netprice between 46 and 128,, Subprice is not STANDARD");
 	    			  x= (int) mObj.get("provider_productid");
 	    			 list.add(x);
-	    			 System.out.println();
 	    		  }
  	    		 
  	    	  }
- 	    	  //System.out.println();
+ 	    	  System.out.println();
  	      }
+ 	      
  	      catch(Exception e)
  	      {
- 	    	 //e.printStackTrace();
+ 	    	 e.printStackTrace();
  	      }
+ 	       
+ 	     
  	    } 
+ 	      
  	        
  	     	else if(prodCursor1.hasNext())
  	        {
@@ -139,70 +134,67 @@ public class PriceCalculation
  	           
  	           age = AddDate.calculateNumberOfDays(publishedDate, curdate);
  	           subprice = (String) mObj1.get("subprice");
- 	           //log.info("Provider_productid : " +mObj1.get("provider_productid")+ " || ProductStatus : "+mObj1.get("productstatus")+ " || publisheddate : "+mObj1.get("publisheddate")+" || netprice : "+mObj1.get("netprice")+" || age : "+age+" || subprice : "+mObj1.get("subprice"));
+ 	           log.info("Provider_productid : " +mObj1.get("provider_productid")+ " || ProductStatus : "+mObj1.get("productstatus")+ " || publisheddate : "+mObj1.get("publisheddate")+" || netprice : "+mObj1.get("netprice")+" || age : "+age+" || subprice : "+mObj1.get("subprice"));
  	          
  	          if(age<=180)
  	    	  {
  	    		  if(subprice.equals("STANDARD"))
- 	    		  {
  	    		  //Assert.assertEquals(subprice, "STANDARD");
- 	    		  //log.info("For age <= 180,,Subprice is STANDARD"); 
- 	    		  }
+ 	    		  log.info("For age <= 180,,Subprice is STANDARD"); 
  	    		  
  	    		  else
  	    		  {
  	    			  x= (int) mObj1.get("provider_productid");
  	    			 list.add(x);
- 	    			log.info("Provider_productid : " +mObj1.get("provider_productid")+ " || ProductStatus : "+mObj1.get("productstatus")+ " || publisheddate : "+mObj1.get("publisheddate")+" || netprice : "+mObj1.get("netprice")+" || age : "+age+" || subprice : "+mObj1.get("subprice"));
- 	    			 log.info("For age <= 180,, Subprice is not STANDARD but :" +subprice);
- 	    			System.out.println();
+ 	    			 log.info("For age <= 180,, Subprice is not STANDARD");
  	    		  }
  	    	  }
  	       
  	    	  else if( age > 180 && netprice <= 46.0 )
  	    	  {
  	    		 if(subprice.equals("BASE"))
- 	    		 {
- 	    			// Assert.assertEquals(subprice, "BASE");
- 	 	    		 // log.info("For age > 180 and NetPrice <= 46,,Subprice is BASE");
- 	 	    	 }
+ 	    		 // Assert.assertEquals(subprice, "BASE");
+ 	    		  log.info("For age > 180 and NetPrice <= 46,,Subprice is BASE");
+ 	    		 
  	    		 
  	    		 else
 	    		  {
 	    			  x= (int) mObj1.get("provider_productid");
 	    			 list.add(x);
-	    			 log.info("Provider_productid : " +mObj1.get("provider_productid")+ " || ProductStatus : "+mObj1.get("productstatus")+ " || publisheddate : "+mObj1.get("publisheddate")+" || netprice : "+mObj1.get("netprice")+" || age : "+age+" || subprice : "+mObj1.get("subprice"));
-	    			 log.info("For age > 180 and NetPrice <=46,, Subprice is not BASE but :" +subprice);
-	    			 System.out.println();
+	    			 log.info("For age > 180 and NetPrice <=46,, Subprice is not BASE");
 	    		  }
  	    	  }
  	      
  	    	  else if( age > 180 && netprice > 46.0 && netprice <= 128.0)
  	    	  {
-						if (subprice.equals("STANDARD"))
-						{
-						// Assert.assertEquals(subprice, "STANDARD");
-						//log.info("For age > 180 and NetPrice > 46 and netprice <=128.0 ,,Subprice is STANDARD");
-						}
+ 	    		 if(subprice.equals("STANDARD"))
+ 	    		 // Assert.assertEquals(subprice, "STANDARD");
+ 	    		  log.info("For age > 180 and NetPrice > 46 and netprice <=128.0 ,,Subprice is STANDARD"); 
  	    		 else
 	    		  {
- 	    			log.info("Provider_productid : " +mObj1.get("provider_productid")+ " || ProductStatus : "+mObj1.get("productstatus")+ " || publisheddate : "+mObj1.get("publisheddate")+" || netprice : "+mObj1.get("netprice")+" || age : "+age+" || subprice : "+mObj1.get("subprice"));
-						log.info("For age > 180 and Netprice between 46 and 128,, Subprice is not STANDARD but :" +subprice);
-						x = (int) mObj1.get("provider_productid");
-						list.add(x);
-						System.out.println();
+ 	    			log.info("For age > 180 and Netprice between 46 and 128,, Subprice is not STANDARD");
+	    			  x= (int) mObj1.get("provider_productid");
+	    			 list.add(x);
 	    		  }
+ 	    		 
  	    	  }
- 	         //System.out.println();
+ 	         System.out.println();
  	          }
  	          
  	          catch(Exception e)
  	          {
- 	        	 // e.printStackTrace();
+ 	        	  e.printStackTrace();
  	          }
  	        }
- 		}
- 		log.info("Total Number of 'provider_productid' which did not pass the Validations are: '" +list.size()+ "' and are listed below:");	 
+ 	           
+ 	        
+// 	           age = AddDate.calculateNumberOfDays(publishedDate, curdate);
+// 	           subprice = (String) mObj.get("subprice");
+// 	           log.info("publisheddate : "+mObj.get("publisheddate")+" || netprice : "+mObj.get("netprice")+" || age : "+age+" || subprice : "+mObj.get("subprice"));
+ 		 
+	
+   }
+ 		log.info("Total Number of 'provider_productid' which did not pass the Validations are: " +list.size()+ " and are listed below:");	 
  		
  		for(int i=0;i<list.size();i++)
  		{

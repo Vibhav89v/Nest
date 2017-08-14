@@ -22,6 +22,7 @@ import com.sun.jersey.api.client.ClientResponse;
 import Mongo.ProductCollection.Product;
 import Mongo.PublitDistributor.Publit;
 import common.AutomationConstants;
+import common.SuperTestScript;
 import generics.AddDate;
 import generics.MongoDBMorphia;
 import generics.Property;
@@ -29,7 +30,7 @@ import restClientForPublit.AbstractRestClient;
 import valueObject.Datum;
 import valueObject.PublitVO;
 
-public class CountISBNPublit implements AutomationConstants
+public class CountISBNPublit extends SuperTestScript implements  AutomationConstants
 {
 	static String userid = Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "USERID");
 	static String password = Property.getPropertyValue(CONFIG_PATH+CONFIG_FILE, "PASSWORD");
@@ -53,7 +54,7 @@ public class CountISBNPublit implements AutomationConstants
 	  Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 	 }
 	 
-	 @Test(enabled=true, priority=3, groups={"All"})
+	 @Test
 	 public void gettingCountIsbnPublit() throws InterruptedException, SQLException
 	 {
 	  log.info("--------------In Publit Counting ISBN Publit-------------------");
